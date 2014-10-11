@@ -18,6 +18,7 @@
    [ring.middleware.defaults :as rmd]
    [friend-oauth2.workflow :as oauth2]
    [friend-oauth2.util :refer [format-config-uri]]
+   [clj-redis-session.core :refer [redis-store]]
    [yambox.templates :as tpl]
    [nomad :as nom :refer [defconfig]])
   (:gen-class))
@@ -82,6 +83,10 @@
   (c/GET "/create" [] (tpl/page-create))
   (route/resources "/"))
 
+(def redis-conn
+  {:pool {}
+   :spec {}})
+
 (def handler
   (->
    (c/routes
@@ -91,7 +96,9 @@
     (route/not-found "Page not found"))
    (friend/authenticate friend-config)
    (rmd/wrap-defaults (-> rmd/site-defaults
-                          (assoc-in [:security :anti-forgery] false)))))
+                          (assoc-in [:security :anti-forgery] false)
+                          (assoc-in [:session :store] (redis-store redis-conn))
+                          ))))
 
 (defonce server (atom nil))
 
