@@ -33,12 +33,12 @@
   (let [session-store (redis-store {:pool {} :spec {}})
         middleware-conf (deep-merge rmd/site-defaults
                                     {:security {:anti-forgery false}}
-                                    {:session {:store session-store}})
+                                    #_{:session {:store session-store}})
         naked-handler (c/routes
                        routes/main
                        (c/context "/management" req
                          (friend/wrap-authorize routes/secure #{::user}))
-                       (route/resources "/")
+                       (cr/resources "/")
                        (cr/not-found "Page not found"))]
     (-> naked-handler
         (friend/authenticate (oauth/friend-config config))
