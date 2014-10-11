@@ -3,7 +3,8 @@
   :url "http://yambox.org"
   :license {:name "Eclipse Public License 1.0 (EPL-1.0)"
             :url  "https://tldrlegal.com/license/eclipse-public-license-1.0-(epl-1.0)"}
-  :plugins [[lein-cljsbuild "1.0.3"]
+  :plugins [[lein-ring "0.8.12"]
+            [lein-cljsbuild "1.0.3"]
             [lein-asset-minifier "0.2.0"]]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2356"]
@@ -22,6 +23,8 @@
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
   :jvm-opts ["-Xmx512M"]
+  :ring {:handler      yambox.core/handler
+         :reload-paths ["src/clj"]}
   :cljsbuild {:builds [{:id           "dev"
                         :source-paths ["src/cljs"]
                         :compiler     {:output-to     "resources/public/js/yambox_dev.js"
