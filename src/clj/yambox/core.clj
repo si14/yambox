@@ -12,11 +12,19 @@
     [ring.adapter.jetty :refer [run-jetty]]
     [ring.util.response :as resp]
     [ring.middleware.anti-forgery :as raf]
-    [ring.middleware.defaults :as rmd])
+    [ring.middleware.defaults :as rmd]
+    [yambox.templates :as tpl])
   (:gen-class))
 
+(defn static-html
+  [file-name]
+  (-> file-name
+    (resp/resource-response {:root "public"})
+    (assoc :headers {"Content-Type" "text/html"})))
+
 (c/defroutes routes
-  (c/GET "/" [] "<h1>Hello World Wide Web!</h1>")
+  (c/GET "/" [] (static-html "index.html"))
+  (c/GET "/create" [] (tpl/page-create))
   (route/resources "/")
   (route/not-found "Page not found"))
 
