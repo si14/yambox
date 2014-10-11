@@ -35,3 +35,6 @@
                 {:client-config oauth
                  :uri-config (get-uri-config oauth)
                  :credential-fn credential-fn})]})
+
+(defn req->token [req]
+  (get-in req [:session :cemerick.friend/identity :current :access-token]))
