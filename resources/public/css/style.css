@@ -1,3 +1,65 @@
-body {
+/* Main */
 
+body, .btn {
+    font-family: "PT Sans", sans-serif;
+    font-size: 15px;
+}
+
+h1 {
+    font-family: "PT Sans Narrow", sans-serif;
+    font-weight: 400;
+    font-size: 30px;
+}
+
+/* Overriding bootstrap */
+
+.btn {
+    border: 0px;
+}
+
+.btn-default {
+    background: #ff6600;
+    color: white;
+    outline: none;
+}
+
+.btn-default:hover, .btn-default:focus, .btn-default:active {
+    color: white;
+    background-color: #ff8052;
+    outline: none;
+}
+
+/* Landing */
+
+.landing {
+    background-color: #fff7f0;
+    background: url(/img/landing-bg.png);
+}
+
+.landing div {
+    margin: 0 auto;
+    width: 500px;
+    height: 400px;
+    text-align: center;
+}
+
+.landing div img {
+    margin-top: 50px;
+    padding: 25px;
+
+}
+
+.landing div p {
+    margin-top: 35px;
+}
+
+.landing div p .btn {
+    font-size: 110%;
+}
+
+/* Social */
+
+.social {
+    text-align: center;
+    margin: 20px;
 }
