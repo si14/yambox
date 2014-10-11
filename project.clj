@@ -5,7 +5,8 @@
             :url  "https://tldrlegal.com/license/eclipse-public-license-1.0-(epl-1.0)"}
   :plugins [[lein-ring "0.8.12"]
             [lein-cljsbuild "1.0.3"]
-            [lein-asset-minifier "0.2.0"]]
+            [lein-asset-minifier "0.2.0"]
+            [hiccup-bridge "1.0.1"]]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2356"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]

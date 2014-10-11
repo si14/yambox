@@ -7,27 +7,14 @@
    [ring.util.response :as resp]
    [yambox.templates :as tpl]))
 
-;;
-;; Utils
-;;
-
-(defn static-html
-  [file-name]
-  (-> file-name
-      (resp/resource-response {:root "public"})
-      (assoc :headers {"Content-Type" "text/html"})))
-
-;;
-;; Routes
-;;
-
 (c/defroutes main
-  (c/GET "/" [] (static-html "index.html"))
+  (c/GET "/" [] (tpl/page-index))
   (c/GET "/create" [] (tpl/page-create))
   (friend/logout (c/GET "/logout" request (resp/redirect "/"))))
 
-(c/defroutes secure
-  (c/GET "/page" req
+(c/defroutes management
+  (c/GET "/" [] "YO!")
+  (c/GET "/create-campaign" req
     (let [token (-> req
                     :session
                     :cemerick.friend/identity
