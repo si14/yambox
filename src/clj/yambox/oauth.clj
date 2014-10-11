@@ -10,6 +10,9 @@
   {:identity token
    :roles #{::user}})
 
+(defn req->token [req]
+  (get-in req [:session :cemerick.friend/identity :current :access-token]))
+
 (p/defnk format-rights [required-rights]
   (s/join " " (map name required-rights)))
 

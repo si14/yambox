@@ -13,6 +13,13 @@
    (include-css "http://fonts.googleapis.com/css?family=PT+Sans:400,700&subset=cyrillic,latin")
    (include-css "css/style.css")])
 
+(defn- wrap-top
+  [& links]
+  [:div.top
+   [:img {:src "img/logo_small.png"}]
+   [:div.links links]
+   [:div.clear]])
+
 (defn- wrap-yandex-social
   []
   [:div.social
@@ -34,13 +41,10 @@
 
 (defn page-index
   []
-  (->
+  (make-html
     {:title "YamBox"
      :body  [:div
-             [:div.top
-              [:img {:src "img/logo_small.png"}]
-              [:div.login
-               [:a.btn.btn-default {:href "/login"} "Войти в аккаунт"]]]
+             (wrap-top [:a {:href "/login"} "Войти в аккаунт"])
              [:div.landing
               [:div.info
                [:h1 "Собирай деньги проще и эффективнее!"]
@@ -56,13 +60,19 @@
                     :target "_blank"}
                 "Xiaojun Deng"]
                ". Licenced under Creative Commons 2.0."]]
-             (wrap-yandex-social)
-             ]}
-    (make-html)))
+             (wrap-yandex-social)]}))
 
-(defn page-create
-  []
-  (->
+(defn page-management
+  [req]
+  (make-html
+    {:title "Управление кампанией — YamBox"
+     :body [:div
+            (wrap-top [:a {:href "/logout"} "Выйти"])
+
+            ]}))
+
+(defn page-management-create
+  [req]
+  (make-html
     {:title "Test"
-     :body "Wow"}
-    (make-html)))
+     :body "Wow"}))

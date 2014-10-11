@@ -36,16 +36,24 @@ h1 {
 }
 
 .top img {
+    float: left;
     width: 130px;
 }
 
-.top .login {
+.top .links {
     float: right;
 }
 
-.top .login .btn {
+.top .links a {
+    display: block;
+    color: #ff6600;
+    text-decoration: underline;
     font-size: 110%;
-    margin-top: 8px;
+    margin-top: 14px;
+}
+
+.top .clear {
+    clear: both;
 }
 
 /* Landing */

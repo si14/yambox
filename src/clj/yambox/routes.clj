@@ -5,16 +5,21 @@
    [compojure.core :as c]
    [compojure.route :as route]
    [ring.util.response :as resp]
-   [yambox.templates :as tpl]))
+   [yambox.templates :as tpl]
+   [yambox.oauth :as auth]))
 
 (c/defroutes main
-  (c/GET "/" [] (tpl/page-index))
-  (c/GET "/create" [] (tpl/page-create))
+  (c/GET "/" req
+    (if-let [token (auth/req->token req)]
+      (resp/redirect "/management")
+      (tpl/page-index)))
   (friend/logout (c/GET "/logout" request (resp/redirect "/"))))
 
 (c/defroutes management
-  (c/GET "/" [] "YO!")
-  (c/GET "/create-campaign" req
+  (c/GET "/" req (tpl/page-management req))
+  (c/GET "/create-campaign" req (tpl/page-management-create req))
+
+  #_(c/GET "/create-campaign" req
     (let [token (-> req
                     :session
                     :cemerick.friend/identity
@@ -26,5 +31,4 @@
                            :as :json})]
       (->> resp
            :body
-           :balance
            str))))
