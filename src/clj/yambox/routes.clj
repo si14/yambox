@@ -26,7 +26,10 @@
 ;;
 
 (defn handle-campaign-change [create? req]
-  (let [campaign (->> (:params req)
+  (let [wallet-id (oauth/req->wallet-id req)
+        known (if create? {} (db/get-campaign-by-wallet-id wallet-id))
+        campaign (->> (:params req)
+                      (merge known)
                       (schemas/fetch-campaign-data req)
                       schemas/map->Campaign
                       parse-campaign)]

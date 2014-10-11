@@ -62,13 +62,8 @@
                "Собираете деньги на добрые дела? Добро должно быть открытым."
                [:p
                 [:a.btn.btn-default
-<<<<<<< HEAD
                  {:href "/management/create-campaign"}
                  "Я тоже так считаю"]]]
-=======
-                 {:href "/management/"}
-                 "Начать кампанию сейчас!"]]]
->>>>>>> campaign registration/update kinda works
               [:div.copyright
                "Image by "
                [:a {:href   "https://www.flickr.com/photos/hktang/5369651068/",
@@ -200,8 +195,4 @@
   [req]
   (make-html
     {:title ""
-<<<<<<< HEAD
-     :body  ""}))
-=======
      :body ""}))
->>>>>>> campaign registration/update kinda works
