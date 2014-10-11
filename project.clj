@@ -14,7 +14,10 @@
                  [ring/ring-defaults "0.1.2"]
                  [compojure "1.2.0"]
                  [com.cemerick/friend "0.2.1"]
+                 [jarohen/nomad "0.7.0"]
+                 [prismatic/plumbing "0.3.3"]
 
+                 ;; friend-oauth2 deps
                  [clj-http "0.7.7"]
                  [cheshire "5.2.0"]
                  [crypto-random "1.1.0"]]

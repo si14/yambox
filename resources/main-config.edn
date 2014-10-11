@@ -1,0 +1,15 @@
+{:port 1332
+ :oauth {:client-id :to-be-overridden
+         :client-secret :to-be-overridden
+         :callback {:domain :to-be-overridden
+                    :path "/oauth2callback"}
+         :required-rights [:account-info]}
+ :nomad/hosts {"si14-ThinkPad"
+               {:nomad/private-file #nomad/file "../private-config.edn"
+                :oauth {:callback {:domain "http://localhost:1332"}}}
+               "ponyair"
+               {:nomad/private-file #nomad/file "../private-config.edn"
+                {:oauth {:callback {:domain "http://localhost:1332"}}}}
+               "yambox-main"
+               {:nomad/private-file #nomad/file "private-config.edn"
+                {:oauth {:callback {:domain "http://yambox.org"}}}}}}
