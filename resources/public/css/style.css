@@ -5,11 +5,22 @@ body, .btn {
     font-size: 15px;
 }
 
-h1 {
+h1, h2, h3 {
     font-family: "PT Sans Narrow", sans-serif;
     font-weight: 400;
-    font-size: 30px;
     margin: 10px;
+}
+
+h1 {
+    font-size: 30px;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+h3 {
+    font-size: 20px;
 }
 
 div.separator {
@@ -109,6 +120,45 @@ div.separator {
 }
 
 
+/* Features */
+
+div.features {
+    background: #f0fbfc;
+    padding: 20px 0px;
+}
+
+div.features h2 {
+    text-align: center;
+}
+
+div.features ol {
+    counter-reset: item;
+    margin-left: 0;
+    padding-left: 0;
+    font-size: 18px;
+}
+
+div.features li:before {
+    display: inline-block;
+    content: counter(item);
+    counter-increment: item;
+    background: #ff6600;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    margin-left: -50px;
+    margin-right: 20px;
+    padding-top: 3px;
+}
+
+div.features ol li {
+    display: block;
+    margin-bottom: .5em;
+    margin-left: 2em;
+}
+
 /* Page */
 
 div.page div.form  {
@@ -169,6 +219,7 @@ div.page div.tips  {
 .footer {
     color: #aaa;
     margin-top: 40px;
+    margin-bottom: 40px;
     text-align: center;
 }
 
