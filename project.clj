@@ -16,7 +16,6 @@
                  [com.cemerick/friend "0.2.1"]
                  [jarohen/nomad "0.7.0"]
                  [prismatic/plumbing "0.3.3"]
-                 [clj-redis-session "2.1.0"]
 
                  ;; friend-oauth2 deps
                  [clj-http "0.7.7"]

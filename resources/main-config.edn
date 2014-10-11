@@ -1,4 +1,5 @@
 {:port 1332
+ :cookie-key :to-be-overridden
  :oauth {:client-id :to-be-overridden
          :client-secret :to-be-overridden
          :callback {:domain :to-be-overridden

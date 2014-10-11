@@ -9,7 +9,7 @@
    [ring.adapter.jetty :refer [run-jetty]]
    [ring.middleware.anti-forgery :as raf]
    [ring.middleware.defaults :as rmd]
-   [clj-redis-session.core :refer [redis-store]]
+   [ring.middleware.session.cookie :refer [cookie-store]]
    [nomad :as nom :refer [defconfig]]
    [nomad.map :refer [deep-merge]]
    [yambox.oauth :as oauth]
@@ -30,10 +30,10 @@
 ;;
 
 (defn get-handler [config]
-  (let [session-store (redis-store {:pool {} :spec {}})
+  (let [session-store (cookie-store {:key (p/safe-get config :cookie-key)})
         middleware-conf (deep-merge rmd/site-defaults
                                     {:security {:anti-forgery false}}
-                                    #_{:session {:store session-store}})
+                                    {:session {:store session-store}})
         naked-handler (c/routes
                        routes/main
                        (c/context "/management" req
