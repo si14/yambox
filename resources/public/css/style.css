@@ -159,6 +159,21 @@ div.features ol li {
     margin-left: 2em;
 }
 
+
+/* OpenMind, Security, Choose */
+
+div.openmind, div.security, div.choose {
+    padding: 20px 0px;
+}
+
+div.openmind h2, div.security h2, div.choose h2 {
+    text-align: center;
+}
+
+div.choose {
+    text-align: center;
+}
+
 /* Page */
 
 div.page div.form  {
