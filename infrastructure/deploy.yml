@@ -5,7 +5,7 @@
     - vars.yml
   tasks:
     - name: copy uberjar
-      copy: src=../target/{{ app_name }}-0.1.0-SNAPSHOT-standalone.jar dest=/opt/{{ app_name }}/{{ app_name }}.jar
+      copy: src=../target/uberjar/{{ app_name }}-0.1.0-SNAPSHOT-standalone.jar dest=/opt/{{ app_name }}/{{ app_name }}.jar
       notify:
         - restart app
 
