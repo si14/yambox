@@ -34,12 +34,8 @@
           [:start_money :bigint]
           [:target_money :bigint]
           [:created :timestamp]
-          [:wallet_id :bigint]
-          [:oauth_token "varchar(300)"]))
-      (j/db-do-commands spec
-        "CREATE INDEX campaigns_slug_ix ON campaigns(slug)")
-      (j/db-do-commands spec
-        "CREATE INDEX campaigns_wallet_id_ix ON campaigns(wallet_id)"))))
+          [:wallet_id :bigint "UNIQUE"]
+          [:oauth_token "varchar(300)"])))))
 
 (defn to-underscore [m]
   (p/map-keys (fn [k] (-> k name (s/replace "-" "_") keyword)) m))
