@@ -5,6 +5,7 @@
          :callback {:domain :to-be-overridden
                     :path "/oauth2callback"}
          :required-rights [:account-info :operation-history]}
+ :db {:subfolder "maindb"}
  :nomad/hosts {"si14-ThinkPad"
                {:nomad/private-file #nomad/file "../private-config.edn"
                 :oauth {:callback {:domain "http://localhost:1332"}}}

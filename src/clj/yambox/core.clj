@@ -10,10 +10,11 @@
    [ring.middleware.anti-forgery :as raf]
    [ring.middleware.defaults :as rmd]
    [ring.middleware.session.cookie :refer [cookie-store]]
-   [nomad :as nom :refer [defconfig]]
+   [nomad :refer [defconfig]]
    [nomad.map :refer [deep-merge]]
    [yambox.oauth :as oauth]
-   [yambox.routes :as routes])
+   [yambox.routes :as routes]
+   [yambox.database :as db])
   (:gen-class))
 
 ;;

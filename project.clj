@@ -17,6 +17,11 @@
                  [com.cemerick/friend "0.2.1"]
                  [jarohen/nomad "0.7.0"]
                  [prismatic/plumbing "0.3.3"]
+                 [prismatic/schema "0.3.0"]
+                 [com.h2database/h2 "1.4.181"]
+                 [org.clojure/java.jdbc "0.3.5"]
+                 [honeysql "0.4.3"]
+                 [clj-time "0.8.0"]
 
                  ;; friend-oauth2 deps
                  [clj-http "0.7.7"]
