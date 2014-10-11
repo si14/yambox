@@ -63,7 +63,6 @@
 
 (sc/defn ^:always-validate add-campaign
   [campaign :- Campaign]
-  (prn (to-underscore campaign))
   (j/insert! @db-spec
     :campaigns
     (to-underscore campaign)))
