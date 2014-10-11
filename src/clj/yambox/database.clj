@@ -40,6 +40,9 @@
 (defn to-underscore [m]
   (p/map-keys (fn [k] (-> k name (s/replace "-" "_") keyword)) m))
 
+(defn to-dash [m]
+  (p/map-keys (fn [k] (-> k name (s/replace "_" "-") keyword)) m))
+
 (sc/defn ^:always-validate add-campaign
   [campaign :- Campaign]
   (prn (to-underscore campaign))
@@ -55,16 +58,24 @@
                            :where [:= :slug slug]}))]
     (-> res first vals first (> 0))))
 
+(defn queryset-to-campaign [qs]
+  (-> qs
+      first
+      to-dash
+      schemas/strict-map->Campaign))
+
 (sc/defn get-campaign-by-slug :- Campaign
   [slug :- sc/Str]
-  (j/query @db-spec
-    (sql/format {:select [:*]
-                 :from [:campaigns]
-                 :where [:= :slug slug]})))
+  (let [res (j/query @db-spec
+              (sql/format {:select [:*]
+                           :from [:campaigns]
+                           :where [:= :slug slug]}))]
+    (queryset-to-campaign res)))
 
 (sc/defn get-campaign-by-wallet-id :- Campaign
   [wallet-id :- sc/Int]
-  (j/query @db-spec
-    (sql/format {:select [:*]
-                 :from [:campaigns]
-                 :where [:= :wallet_id wallet-id]})))
+  (let [res (j/query @db-spec
+              (sql/format {:select [:*]
+                           :from [:campaigns]
+                           :where [:= :wallet_id wallet-id]}))]
+    (queryset-to-campaign res)))
