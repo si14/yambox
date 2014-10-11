@@ -1,0 +1,21 @@
+---
+
+- hosts: web
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: copy uberjar
+      copy: src=../target/{{ app_name }}-0.1.0-SNAPSHOT-standalone.jar dest=/opt/{{ app_name }}/{{ app_name }}.jar
+      notify:
+        - restart app
+
+    - name: copy resources
+      local_action: command rsync -r ../resources {{ app_name }}@{{ ansible_ssh_host }}:/opt/{{ app_name }}/
+
+    - name: gzip everything
+      script: gzip.sh
+
+  handlers:
+    - name: restart app
+      service: name={{ app_name }} state=restarted
+      sudo: yes

@@ -1,0 +1,72 @@
+---
+
+- hosts: web
+  vars_files:
+    - vars.yml
+  sudo: yes
+  tasks:
+    - name: add webupd8team ppa
+      shell: add-apt-repository ppa:webupd8team/java -y
+
+    - name: add nginx ppa
+      shell: add-apt-repository ppa:nginx/stable -y
+
+    # - name: add redis ppa
+    #   shell: add-apt-repository ppa:chris-lea/redis-server -y
+
+    - name: update system
+      apt: update_cache=yes upgrade=yes
+
+    - name: accept Oracle license
+      shell: echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+
+    - name: install JDK8
+      apt: pkg={{ item }} state=present
+      with_items:
+        - oracle-java8-installer
+        - oracle-java8-set-default
+
+    - name: install nginx
+      apt: pkg=nginx state=present
+
+    - name: install redis
+      apt: pkg=redis-server state=present
+      notify:
+        - restart redis
+
+    - name: create ssl dir
+      file: path=/etc/nginx/ssl/ state=directory
+
+    - name: write nginx.conf
+      template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-enabled/main
+      notify:
+        - restart nginx
+
+    - name: delete default vhost
+      file: path=/etc/nginx/sites-enabled/default state=absent
+      notify:
+        - restart nginx
+
+    - name: copy init script
+      template: src=templates/initscript.j2 dest=/etc/init.d/{{ app_name }} mode=0777
+
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted
+
+    - name: restart redis
+      service: name=redis-server state=restarted
+
+- hosts: web
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: ensure app folder
+      file: path=/opt/{{ app_name }} state=directory mode=0777
+      sudo: yes
+
+    - name: ensure log folder
+      file: path=/opt/{{ app_name }}/logs state=directory
+
+    - name: copy run.sh
+      template: src=templates/run.sh.j2 dest=/opt/{{ app_name }}/run.sh mode=0777

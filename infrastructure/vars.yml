@@ -1,0 +1,6 @@
+---
+
+cloj_port: 1332
+web_jvmmem: 512m
+app_name: yambox
+app_domain: yambox.org

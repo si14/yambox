@@ -1,0 +1,12 @@
+#!/bin/bash
+
+MY_APP_HOME="/opt/{{ app_name }}"
+MY_APP_JAR="{{ app_name }}.jar"
+STDOUT_LOG_FILE="logs/stdout.log"
+STDERR_LOG_FILE="logs/stderr.log"
+
+
+java -Xms{{web_jvmmem}} -Xmx{{web_jvmmem}} \
+    -jar $MY_APP_HOME/$MY_APP_JAR  > $MY_APP_HOME/$STDOUT_LOG_FILE 2> $MY_APP_HOME/$STDERR_LOG_FILE&
+echo $! > $MY_APP_HOME/tmp/{{ app_name }}.pid
+exit 0
