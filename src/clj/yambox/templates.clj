@@ -21,6 +21,16 @@
    [:div.links links]
    [:div.clear]])
 
+(defn- wrap-footer
+  [& links]
+  [:div.footer
+   "&copy 2014 "
+   [:b "Sugar Glider"]
+   " team for "
+   [:a {:href "https://tech.yandex.ru/events/meetings/october-2014/"
+        :target "_blank"}
+    "Yandex.Money Hackathon"]])
+
 (defn- wrap-yandex-social
   []
   [:div.social.container
@@ -62,7 +72,8 @@
                     :target "_blank"}
                 "Xiaojun Deng"]
                ". Licenced under Creative Commons 2.0."]]
-             (wrap-yandex-social)]}))
+             (wrap-yandex-social)
+             (wrap-footer)]}))
 
 (defn page-management
   [req]
@@ -72,8 +83,10 @@
             (wrap-top [:a {:href "/logout"} "Выйти"])
             [:div.separator]
             [:div.container
-             [:div.coll-sm-12
-              [:h1 "Моя кампания"]]]]}))
+             [:div.col-sm-6
+              [:h1 "Моя кампания"]]
+             [:div.col-sm-6
+              "Test"]]]}))
 
 (defn page-management-create
   [req]
@@ -82,9 +95,25 @@
      :body [:div
             (wrap-top [:a {:href "/logout"} "Выйти"])
             [:div.separator]
-            [:div.container
-             [:div.coll-sm-12
-              [:h1 "Новая кампания"]]]]}))
+            [:div.container.page
+             [:div.col-sm-8.form
+              [:form {:role "form"}
+               [:div.form-group
+                [:input.header.control {:placeholder "Введите название"}]
+                [:div.descr "Например, "
+                 [:a "Сбор денег для проведения избирательной кампании"]]]
+               [:div.form-group
+                [:label "Ссылка на страницу кампании:"]
+                [:input.control]]
+               [:div.form-group
+                [:label "Сумма для сбора (в рублях):"]
+                [:input.control {:type "number"}]]
+               [:input.btn.btn-default {:type "submit" :value "Создать"}]]]
+             [:div.col-sm-4.tips
+              "Обратите внимание, что вы можете вести только одну кампанию одновременно.
+              После создания кампании вы можете поменять название и сумму для сбора,
+              однако изменение ссылки будет недоступно."]]
+            (wrap-footer)]}))
 
 (defn page-campaign
   [req]

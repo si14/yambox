@@ -17,13 +17,13 @@
                   :height "100px"
                   :display "table"
                   :padding "0 20px"
+                  :position "relative"
                   :background "linear-gradient(#eee, #fff)"}
      [:div.row {:display "table-row"}
       [:div.cell {:display "table-cell"
                   :vertical-align "middle"}
-       [:div.logo {:margin "0 auto"}
-        [:img {:width "80px" :height "80px" :margin "10px 30px"}]]
-       [:div.vote {:margin "10px 30px"}
+       [:div.vote {:margin "10px 20px"
+                   :margin-right "0"}
         [:a.vote-btn {:background "#ff8052;"
                       :display "inline-block"
                       :padding "10px 20px"
@@ -51,7 +51,14 @@
                       :height "18px"
                       :left "0"
                       :top "0"
-                      :border-radius "3px"}]]]]]))
+                      :border-radius "3px"}]]]]
+     [:div.info {:position "absolute"
+                 :padding "5px 20px"
+                 :color "#aaa"
+                 :font-size "11px"
+                 :right "0"
+                 :bottom "0"}
+      [:a {:color "#aaa"}]]]))
 
 (p/defnk render
   [params :as req]
@@ -70,4 +77,5 @@
           [:span.cur "38 800"]]]]
        [:div.cell
         [:div.vote
-         [:a.vote-btn {:href "http://ya.ru/"} "Голосовать"]]]]]]))
+         [:a.vote-btn {:href "http://ya.ru/"} "Оплатить"]]]]
+      [:div.info "Powered by " [:a {:href "https://yambox.org" :target "_blank"} "YamBox"]]]]))

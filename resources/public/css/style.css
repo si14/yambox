@@ -9,6 +9,7 @@ h1 {
     font-family: "PT Sans Narrow", sans-serif;
     font-weight: 400;
     font-size: 30px;
+    margin: 10px;
 }
 
 div.separator {
@@ -107,10 +108,71 @@ div.separator {
     text-decoration: underline;
 }
 
+
+/* Page */
+
+div.page div.form  {
+    background: #f0fbfc;
+    padding: 20px;
+}
+
+div.page div.form input.control {
+    outline: none;
+}
+
+div.page div.form .descr {
+    padding: 10px;
+}
+
+div.page div.form .descr a {
+    text-decoration: none;
+    color: #428bca;
+    border-bottom: 1px dashed #428bca;
+    cursor: pointer;
+}
+
+div.page div.form .descr a:hover {
+    border-bottom: 0px;
+}
+
+div.page div.form label {
+    width: 100%;
+    margin: 0px 10px;
+}
+
+div.page div.form input.control {
+    padding: 0px 10px;
+    font-family: "PT Sans", sans-serif;
+    width: 100%;
+}
+
+div.page div.form input.header {
+    font-size: 30px;
+    font-family: "PT Sans Narrow", sans-serif;
+}
+
+div.page div.tips  {
+    padding: 20px;
+}
+
+
 /* Social */
 
 .social {
     text-align: center;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+/* Footer */
+
+.footer {
+    color: #aaa;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.footer a {
+    text-decoration: underline;
+    color: #aaa;
 }
