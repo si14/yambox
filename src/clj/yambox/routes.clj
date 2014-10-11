@@ -1,5 +1,6 @@
 (ns yambox.routes
   (:require
+   [cemerick.friend :as friend]
    [clj-http.client :as http]
    [compojure.core :as c]
    [compojure.route :as route]
@@ -22,7 +23,8 @@
 
 (c/defroutes main
   (c/GET "/" [] (static-html "index.html"))
-  (c/GET "/create" [] (tpl/page-create)))
+  (c/GET "/create" [] (tpl/page-create))
+  (friend/logout (c/GET "/logout" request (resp/redirect "/"))))
 
 (c/defroutes secure
   (c/GET "/page" req
