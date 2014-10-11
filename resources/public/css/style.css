@@ -29,32 +29,67 @@ h1 {
     outline: none;
 }
 
+/* Top */
+
+.top {
+    padding: 10px 20px;
+}
+
+.top img {
+    width: 130px;
+}
+
+.top .login {
+    float: right;
+}
+
+.top .login .btn {
+    font-size: 110%;
+    margin-top: 8px;
+}
+
 /* Landing */
 
 .landing {
-    background-color: #fff7f0;
-    background: url(/img/landing-bg.png);
+    background: url(/img/landing.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 20px;
+    height: 320px;
+    color: white;
+    position: relative;
 }
 
-.landing div {
+.landing div.info {
     margin: 0 auto;
     width: 500px;
-    height: 400px;
     text-align: center;
 }
 
-.landing div img {
+.landing div.info img {
     margin-top: 50px;
     padding: 25px;
-
 }
 
-.landing div p {
-    margin-top: 35px;
+.landing div.info p {
+    margin-top: 15px;
 }
 
-.landing div p .btn {
+.landing div.info p .btn {
     font-size: 110%;
+}
+
+.landing div.copyright {
+    position: absolute;
+    padding: 10px 20px;
+    right: 0;
+    bottom: 0;
+    opacity: 0.6;
+}
+
+.landing div.copyright a {
+    color: white;
+    text-decoration: underline;
 }
 
 /* Social */
