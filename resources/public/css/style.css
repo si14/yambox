@@ -11,6 +11,12 @@ h1 {
     font-size: 30px;
 }
 
+div.separator {
+    height: 1px;
+    width: 100%;
+    background-color: #ddd;
+}
+
 /* Overriding bootstrap */
 
 .btn {
@@ -70,7 +76,6 @@ h1 {
 
 .landing div.info {
     margin: 0 auto;
-    width: 500px;
     text-align: center;
 }
 
@@ -89,10 +94,12 @@ h1 {
 
 .landing div.copyright {
     position: absolute;
-    padding: 10px 20px;
-    right: 0;
+    left: 0px;
+    width: 100%;
+    text-align: center;
     bottom: 0;
     opacity: 0.6;
+    font-size: 80%;
 }
 
 .landing div.copyright a {

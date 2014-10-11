@@ -5,14 +5,16 @@
    [compojure.core :as c]
    [compojure.route :as route]
    [ring.util.response :as resp]
+   [yambox.oauth :as auth]
    [yambox.templates :as tpl]
-   [yambox.oauth :as auth]))
+   [yambox.widget :as widget]))
 
 (c/defroutes main
   (c/GET "/" req
     (if-let [token (auth/req->token req)]
       (resp/redirect "/management")
       (tpl/page-index)))
+  (c/GET "/widget/:slug" req (widget/render req))
   (friend/logout (c/GET "/logout" request (resp/redirect "/"))))
 
 (c/defroutes management

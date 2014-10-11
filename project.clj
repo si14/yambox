@@ -17,6 +17,8 @@
                  [com.cemerick/friend "0.2.1"]
                  [jarohen/nomad "0.7.0"]
                  [prismatic/plumbing "0.3.3"]
+                 [hiccup "1.0.5"]
+                 [garden "1.2.1"]
                  [prismatic/schema "0.3.0"]
                  [com.h2database/h2 "1.4.181"]
                  [org.clojure/java.jdbc "0.3.5"]

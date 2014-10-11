@@ -8,15 +8,16 @@
   [:head {:lang "ru"}
    [:meta {:charset "UTF-8"}]
    [:title title]
+   [:link {:rel "icon" :type "image/png" :href "/img/icon.png"}]
    (include-css "https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css")
    (include-css "http://fonts.googleapis.com/css?family=PT+Sans+Narrow&subset=latin,cyrillic")
    (include-css "http://fonts.googleapis.com/css?family=PT+Sans:400,700&subset=cyrillic,latin")
-   (include-css "css/style.css")])
+   (include-css "/css/style.css")])
 
 (defn- wrap-top
   [& links]
-  [:div.top
-   [:img {:src "img/logo_small.png"}]
+  [:div.top.container
+   [:img {:src "/img/logo_small.png"}]
    [:div.links links]
    [:div.clear]])
 
@@ -49,6 +50,7 @@
               [:div.info
                [:h1 "Собирай деньги проще и эффективнее!"]
                "YamBox — удивительный инструмент для коллективного сбора денег. "
+               [:br]
                "Собирай так, чтобы все были довольны."
                [:p
                 [:a.btn.btn-default
@@ -68,11 +70,18 @@
     {:title "Управление кампанией — YamBox"
      :body [:div
             (wrap-top [:a {:href "/logout"} "Выйти"])
-
-            ]}))
+            [:div.separator]
+            [:div.container
+             [:div.coll-sm-12
+              [:h1 "Моя кампания"]]]]}))
 
 (defn page-management-create
   [req]
   (make-html
-    {:title "Test"
-     :body "Wow"}))
+    {:title "Создание кампании — YamBox"
+     :body [:div
+            (wrap-top [:a {:href "/logout"} "Выйти"])
+            [:div.separator]
+            [:div.container
+             [:div.coll-sm-12
+              [:h1 "Новая кампания"]]]]}))
