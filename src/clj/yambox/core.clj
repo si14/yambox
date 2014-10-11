@@ -37,7 +37,8 @@
         naked-handler (c/routes
                        routes/main
                        (c/context "/management" req
-                         (friend/wrap-authorize routes/secure #{::user}))
+                        (friend/wrap-authorize routes/secure
+                                               #{:yambox.oauth/user}))
                        (cr/resources "/")
                        (cr/not-found "Page not found"))]
     (-> naked-handler

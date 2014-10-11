@@ -26,8 +26,7 @@
 
 (c/defroutes secure
   (c/GET "/page" req
-    (let [_ (prn "hi")
-          token (-> req
+    (let [token (-> req
                     :session
                     :cemerick.friend/identity
                     :current
