@@ -1,17 +1,29 @@
 (ns yambox.oauth
   (:require
    [clojure.string :as s]
+   [clj-http.client :as http]
    [friend-oauth2.workflow :as oauth2]
    [friend-oauth2.util :refer [format-config-uri]]
    [plumbing.core :as p]))
 
 (defn credential-fn
   [token]
-  {:identity token
-   :roles #{::user}})
+  (let [naked-token (p/safe-get token :access-token)
+        resp (http/post "https://money.yandex.ru/api/account-info"
+                        {:accept :json
+                         :oauth-token naked-token
+                         :as :json})
+        wallet-id (Long/parseLong (p/safe-get-in resp [:body :account]))]
+    {:identity [naked-token wallet-id]
+     :roles #{::user}}))
 
 (defn req->token [req]
-  (get-in req [:session :cemerick.friend/identity :current :access-token]))
+  (first
+   (get-in req [:session :cemerick.friend/identity :current])))
+
+(defn req->wallet-id [req]
+  (second
+   (get-in req [:session :cemerick.friend/identity :current])))
 
 (p/defnk format-rights [required-rights]
   (s/join " " (map name required-rights)))
@@ -35,6 +47,3 @@
                 {:client-config oauth
                  :uri-config (get-uri-config oauth)
                  :credential-fn credential-fn})]})
-
-(defn req->token [req]
-  (get-in req [:session :cemerick.friend/identity :current :access-token]))

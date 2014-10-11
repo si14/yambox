@@ -57,9 +57,9 @@
            port (p/safe-get config :port)
            handler (get-handler config)
            jetty-config {:port port
-                         :join? join?}
-           new-server (run-jetty handler jetty-config)]
-       (reset! server new-server))))
+                         :join? join?}]
+       (db/init! config)
+       (reset! server (run-jetty handler jetty-config)))))
 
 (defn stop []
   (.stop @server))

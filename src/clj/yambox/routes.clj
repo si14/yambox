@@ -4,14 +4,43 @@
    [clj-http.client :as http]
    [compojure.core :as c]
    [compojure.route :as route]
+   [plumbing.core :as p]
+   [schema.coerce :as coerce]
    [ring.util.response :as resp]
-   [yambox.oauth :as auth]
+   [yambox.oauth :as oauth]
    [yambox.templates :as tpl]
-   [yambox.widget :as widget]))
+   [yambox.widget :as widget]
+   [yambox.database :as db]
+   [yambox.schemas :as schemas])
+  (:import
+   [yambox.schemas Campaign]))
+
+;;
+;; Utils
+;;
+
+(def parse-campaign (coerce/coercer Campaign coerce/string-coercion-matcher))
+
+;;
+;; Handler functions
+;;
+
+(defn handle-campaign-change [create? req]
+  (let [campaign (->> (:params req)
+                      (schemas/fetch-campaign-data req)
+                      schemas/map->Campaign
+                      parse-campaign)]
+    (if create?
+      (db/add-campaign campaign)
+      (db/update-campaign campaign))))
+
+;;
+;; Routes
+;;
 
 (c/defroutes main
   (c/GET "/" req
-    (if-let [token (auth/req->token req)]
+    (if (oauth/req->token req)
       (resp/redirect "/management")
       (tpl/page-index)))
   (c/GET "/campaign/:slug" req (tpl/page-campaign req))
@@ -19,19 +48,12 @@
   (friend/logout (c/GET "/logout" request (resp/redirect "/"))))
 
 (c/defroutes management
-  (c/GET "/" req (tpl/page-management req))
-  (c/GET "/create-campaign" req (tpl/page-management-create req))
-
-  #_(c/GET "/create-campaign" req
-    (let [token (-> req
-                    :session
-                    :cemerick.friend/identity
-                    :current
-                    :access-token)
-          resp (http/post "https://money.yandex.ru/api/account-info"
-                          {:accept :json
-                           :oauth-token token
-                           :as :json})]
-      (->> resp
-           :body
-           str))))
+  (c/GET "/" req
+   (let [wallet-id (oauth/req->wallet-id req)]
+     (if (db/wallet-id-exists? wallet-id)
+       (tpl/page-management req (db/get-campaign-by-wallet-id wallet-id))
+       (tpl/page-management-create req))))
+  (c/POST "/" req
+    (let [create? (not (db/wallet-id-exists? (oauth/req->wallet-id req)))]
+      (handle-campaign-change create? req)
+      (resp/redirect "/management"))))

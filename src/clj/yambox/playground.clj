@@ -12,10 +12,13 @@
             {:name "foo campaign"
              :slug "foo-campaign"
              :start-money 123
+             :current-money 256
              :target-money 1123
              :created (tc/to-date (t/now))
              :wallet-id 123
-             :oauth-token "longstring"})]
+             :oauth-token "longstring"
+             :callback-secret nil
+             :log-salt "foobarbaz"})]
     (db/add-campaign c1)
     [(db/get-campaign-by-slug "foo-campaign")
      (db/get-campaign-by-slug "foo-campaign2")]))

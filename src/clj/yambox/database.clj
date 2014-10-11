@@ -4,6 +4,7 @@
    [clojure.java.jdbc :as j]
    [clojure.string :as s]
    [honeysql.core :as sql]
+   [honeysql.helpers :as sqlh]
    [plumbing.core :as p]
    [schema.core :as sc]
    [yambox.schemas :as schemas])
@@ -15,8 +16,8 @@
 ;; tracking schema changes in production
 (def version ".v1")
 
-(sc/defn init! [settings]
-  (let [subfolder (p/safe-get-in settings [:db :subfolder])
+(sc/defn init! [config]
+  (let [subfolder (p/safe-get-in config [:db :subfolder])
         full-path (str (System/getProperty "user.dir") "/"
                        subfolder "/db"
                        version)
@@ -32,16 +33,33 @@
           [:name "varchar(140)"]
           [:slug "varchar(140)" "PRIMARY KEY"]
           [:start_money :bigint]
+          [:current_money :bigint]
           [:target_money :bigint]
           [:created :timestamp]
           [:wallet_id :bigint "UNIQUE"]
-          [:oauth_token "varchar(300)"])))))
+          [:oauth_token "varchar(300)"]
+          [:callback_secret "varchar(50)" "NULL"]
+          [:log_salt "char(16)"])))))
+
+;;
+;; Utils
+;;
 
 (defn to-underscore [m]
   (p/map-keys (fn [k] (-> k name (s/replace "-" "_") keyword)) m))
 
 (defn to-dash [m]
   (p/map-keys (fn [k] (-> k name (s/replace "_" "-") keyword)) m))
+
+(defn queryset-to-campaign [qs]
+  (-> qs
+      first
+      to-dash
+      schemas/strict-map->Campaign))
+
+;;
+;; Queries
+;;
 
 (sc/defn ^:always-validate add-campaign
   [campaign :- Campaign]
@@ -58,11 +76,13 @@
                            :where [:= :slug slug]}))]
     (-> res first vals first (> 0))))
 
-(defn queryset-to-campaign [qs]
-  (-> qs
-      first
-      to-dash
-      schemas/strict-map->Campaign))
+(sc/defn wallet-id-exists? :- sc/Bool
+  [wallet-id :- sc/Int]
+  (let [res (j/query @db-spec
+              (sql/format {:select [:%count.*]
+                           :from [:campaigns]
+                           :where [:= :wallet-id wallet-id]}))]
+    (-> res first vals first (> 0))))
 
 (sc/defn get-campaign-by-slug :- Campaign
   [slug :- sc/Str]
@@ -79,3 +99,14 @@
                            :from [:campaigns]
                            :where [:= :wallet_id wallet-id]}))]
     (queryset-to-campaign res)))
+
+(sc/defn update-campaign
+  [campaign :- Campaign]
+  (let [changeable? #{:oauth-token :name :current-money}
+        fields (->> campaign
+                    (filter (fn [[k v]] (changeable? k)))
+                    to-underscore)
+        wallet-id (:wallet-id campaign)]
+    (j/update! @db-spec :campaigns
+               fields
+               ["wallet_id = ?" wallet-id])))

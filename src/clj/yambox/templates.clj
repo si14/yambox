@@ -62,8 +62,13 @@
                "Собираете деньги на добрые дела? Добро должно быть открытым."
                [:p
                 [:a.btn.btn-default
+<<<<<<< HEAD
                  {:href "/management/create-campaign"}
                  "Я тоже так считаю"]]]
+=======
+                 {:href "/management/"}
+                 "Начать кампанию сейчас!"]]]
+>>>>>>> campaign registration/update kinda works
               [:div.copyright
                "Image by "
                [:a {:href   "https://www.flickr.com/photos/hktang/5369651068/",
@@ -132,47 +137,71 @@
              (wrap-footer)]}))
 
 (defn page-management
-  [req]
+  [req campaign]
   (make-html
     {:title "Управление кампанией — YamBox"
-     :body  [:div
-             (wrap-top [:a {:href "/logout"} "Выйти"])
-             [:div.separator]
-             [:div.container
-              [:div.col-sm-6
-               [:h1 "Моя кампания"]]
-              [:div.col-sm-6
-               "Test"]]]}))
+     :body [:div
+            (wrap-top [:a {:href "/logout"} "Выйти"])
+            [:div.separator]
+            [:div.container.page
+             [:div.col-sm-8.form
+              [:form {:role "form" :method "POST"}
+               [:div.form-group
+                [:input.header.control {:value (:name campaign)
+                                        :name "name"}]
+                #_[:div.descr "Например, "
+                 [:a "Сбор денег для проведения избирательной кампании"]]]
+               [:div.form-group
+                [:label "Ссылка на страницу кампании:"]
+                [:input.control {:name "slug"
+                                 :value (:slug campaign)
+                                 :disabled "disabled"}]]
+               [:div.form-group
+                [:label "Сумма для сбора (в рублях):"]
+                [:input.control {:type "number"
+                                 :name "target-money"
+                                 :value (:target-money campaign)
+                                 :disabled "disabled"}]]
+               [:input.btn.btn-default {:type "submit" :value "Обновить"}]]]
+             [:div.col-sm-4.tips
+              "Ваша кампания доступна по ссылке FIXME код для виджета FIXME"]]
+            (wrap-footer)]}))
 
 (defn page-management-create
   [req]
   (make-html
     {:title "Создание кампании — YamBox"
-     :body  [:div
-             (wrap-top [:a {:href "/logout"} "Выйти"])
-             [:div.separator]
-             [:div.container.page
-              [:div.col-sm-8.form
-               [:form {:role "form"}
-                [:div.form-group
-                 [:input.header.control {:placeholder "Введите название"}]
-                 [:div.descr "Например, "
-                  [:a "Сбор денег для проведения избирательной кампании"]]]
-                [:div.form-group
-                 [:label "Ссылка на страницу кампании:"]
-                 [:input.control]]
-                [:div.form-group
-                 [:label "Сумма для сбора (в рублях):"]
-                 [:input.control {:type "number"}]]
-                [:input.btn.btn-default {:type "submit" :value "Создать"}]]]
-              [:div.col-sm-4.tips
-               "Обратите внимание, что вы можете вести только одну кампанию одновременно.
-               После создания кампании вы можете поменять название и сумму для сбора,
-               однако изменение ссылки будет недоступно."]]
-             (wrap-footer)]}))
+     :body [:div
+            (wrap-top [:a {:href "/logout"} "Выйти"])
+            [:div.separator]
+            [:div.container.page
+             [:div.col-sm-8.form
+              [:form {:role "form" :method "POST"}
+               [:div.form-group
+                [:input.header.control {:placeholder "Введите название"
+                                        :name "name"}]
+                [:div.descr "Например, "
+                 [:a "Сбор денег для проведения избирательной кампании"]]]
+               [:div.form-group
+                [:label "Ссылка на страницу кампании:"]
+                [:input.control {:name "slug"}]]
+               [:div.form-group
+                [:label "Сумма для сбора (в рублях):"]
+                [:input.control {:type "number"
+                                 :name "target-money"}]]
+               [:input.btn.btn-default {:type "submit" :value "Создать"}]]]
+             [:div.col-sm-4.tips
+              "Обратите внимание, что вы можете вести только одну кампанию одновременно.
+              После создания кампании вы можете поменять название и сумму для сбора,
+              однако изменение ссылки будет недоступно."]]
+            (wrap-footer)]}))
 
 (defn page-campaign
   [req]
   (make-html
     {:title ""
+<<<<<<< HEAD
      :body  ""}))
+=======
+     :body ""}))
+>>>>>>> campaign registration/update kinda works
