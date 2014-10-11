@@ -23,7 +23,7 @@
 
 (defn- wrap-yandex-social
   []
-  [:div.social
+  [:div.social.container
    [:script
     {:charset "utf-8",
      :src     "//yastatic.net/share/share.js",
@@ -85,3 +85,9 @@
             [:div.container
              [:div.coll-sm-12
               [:h1 "Новая кампания"]]]]}))
+
+(defn page-campaign
+  [req]
+  (make-html
+    {:title ""
+     :body ""}))

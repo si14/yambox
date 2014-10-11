@@ -14,7 +14,8 @@
     (if-let [token (auth/req->token req)]
       (resp/redirect "/management")
       (tpl/page-index)))
-  (c/GET "/widget/:slug" req (widget/render req))
+  (c/GET "/campaign/:slug" req (tpl/page-campaign req))
+  (c/GET "/campaign/:slug/widget" req (widget/render req))
   (friend/logout (c/GET "/logout" request (resp/redirect "/"))))
 
 (c/defroutes management
