@@ -67,6 +67,9 @@
     (stop))
   (start))
 
+(defn lein-ring-handler [req]
+  ((get-handler (main-config)) req))
+
 (defn -main
   [& args]
   (start true))

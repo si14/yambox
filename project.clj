@@ -27,7 +27,9 @@
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
   :jvm-opts ["-Xmx512M"]
-  :ring {:handler      yambox.core/handler
+  :ring {:handler      yambox.core/lein-ring-handler
+         :port         1332
+         :nrepl        {:start? true}
          :reload-paths ["src/clj"]}
   :cljsbuild {:builds [{:id           "dev"
                         :source-paths ["src/cljs"]
