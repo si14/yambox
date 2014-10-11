@@ -46,8 +46,8 @@
       ;; http://tools.ietf.org/html/draft-ietf-oauth-v2-31#section-4.1.2
       (let [{:keys [state code]} (:params request)
             session-state        (util/extract-anti-forgery-token request)]
-        (prn "state" state "session-state" session-state)
         (if (and (not (nil? code))
+                 ;; disabling state-based check
                  (or true (= state session-state)))
           (when-let [access-token (request-token config code)]
             (when-let [auth-map ((:credential-fn config default-credential-fn)
