@@ -76,7 +76,9 @@
   (c/GET "/" req
    (let [wallet-id (oauth/req->wallet-id req)]
      (if (db/wallet-id-exists? wallet-id)
-       (tpl/page-management req (db/get-campaign-by-wallet-id wallet-id))
+       (do
+         (handle-campaign-change false req)
+         (tpl/page-management req (db/get-campaign-by-wallet-id wallet-id)))
        (tpl/page-management-create req))))
   (c/POST "/" req
     (let [create? (not (db/wallet-id-exists? (oauth/req->wallet-id req)))]
