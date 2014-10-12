@@ -35,6 +35,7 @@
   :profiles {:uberjar {:aot :all}}
   :jvm-opts ["-Xmx512M"]
   :ring {:handler      yambox.core/lein-ring-handler
+         :init         yambox.core/lein-ring-start
          :port         1332
          :nrepl        {:start? true}
          :reload-paths ["src/clj"]}

@@ -17,7 +17,7 @@
 
 (defn get-campaign-page
   [req]
-  (let [token (auth/req->token req)
+  (let [token (oauth/req->token req)
         resp (http/post
                "https://money.yandex.ru/api/operation-history"
                {:accept      :json

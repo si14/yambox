@@ -72,6 +72,9 @@
 (defn lein-ring-handler [req]
   ((get-handler (main-config)) req))
 
+(defn lein-ring-start []
+  (db/init! (main-config)))
+
 (defn -main
   [& args]
   (start true))
