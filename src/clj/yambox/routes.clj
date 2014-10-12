@@ -57,9 +57,11 @@
 
 (defn get-widget-page
   [req]
-  (let [slug (p/safe-get-in req [:params :slug])
-        campaign (db/get-campaign-by-slug slug)]
-    (widget/render campaign)))
+  (let [slug (p/safe-get-in req [:params :slug])]
+    (if-not (db/slug-exists? slug)
+      (route/not-found "Page not found")
+      (let [campaign (db/get-campaign-by-slug slug)]
+        (widget/render campaign)))))
 
 ;;
 ;; Routes
