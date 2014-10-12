@@ -17,10 +17,8 @@
 (def version ".v1")
 
 (sc/defn init! [config]
-  (let [subfolder (p/safe-get-in config [:db :subfolder])
-        full-path (str (System/getProperty "user.dir") "/"
-                       subfolder "/db"
-                       version)
+  (let [dbfolder (p/safe-get-in config [:db :folder])
+        full-path (str dbfolder "/db" version)
         spec {:classname   "org.h2.Driver"
               :subprotocol "h2:file"
               :subname     full-path

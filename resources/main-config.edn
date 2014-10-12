@@ -5,13 +5,16 @@
          :callback {:domain :to-be-overridden
                     :path "/oauth2callback"}
          :required-rights [:account-info :operation-history]}
- :db {:subfolder "maindb"}
+ :db {:folder :to-be-overridden}
  :nomad/hosts {"si14-ThinkPad"
                {:nomad/private-file #nomad/file "../private-config.edn"
-                :oauth {:callback {:domain "http://localhost:1332"}}}
+                :oauth {:callback {:domain "http://localhost:1332"}}
+                :db {:folder "/tmp/maindb"}}
                "ponyair"
                {:nomad/private-file #nomad/file "../private-config.edn"
-                :oauth {:callback {:domain "http://localhost:1332"}}}
+                :oauth {:callback {:domain "http://localhost:1332"}}
+                :db {:folder "/tmp/maindb"}}
                "yambox-main"
-               {:nomad/private-file #nomad/file "private-config.edn"
-                :oauth {:callback {:domain "http://yambox.org"}}}}}
+               {:nomad/private-file #nomad/file "/opt/yambox/private-config.edn"
+                :oauth {:callback {:domain "http://yambox.org"}}
+                :db {:folder "/opt/yambox/maindb"}}}}}
