@@ -232,15 +232,15 @@
                   [:div.active {:style (str "width: " width-percent "%;")}
                    [:span.cur current-adjusted]]]]]
                [:div.nothing
-                [:h2 "Никто не осуществил переводов за время кампании"]
+                [:h2 "Переводов ещё нет"]
                 [:div.container
                  [:div.col-sm-3]
                  [:div.col-sm-6
                   [:p
-                   "Ваша кампания доступна по ссылке "
+                   "Ссылка: "
                    [:a {:href campaign-link} campaign-link]]
-                  [:p "Код для виджета:"
-                   [:pre (str "&lt;iframe src=" widget-link "\""
+                  [:p "Код виджета:"
+                   [:pre (str "&lt;iframe src=\"" widget-link "\""
                            " width=\"100%\""
                            " frameborder=\"0\""
                            " allowtransparency=\"true\""

@@ -28,10 +28,12 @@
 (defn mask-wallet
   [salt x]
   (update-in x [:title] (fn [t] (clojure.string/replace t #"[\d]{5,15}"
-                                  (fn [r] (-> r
-                                            (str salt)
-                                             d/sha-256
-                                            (subs 0 16)))))))
+                                  (fn [r]
+                                    (let [masked (-> r
+                                                     (str salt)
+                                                     d/sha-256
+                                                     (subs 0 16))]
+                                      (str "<span class=\"mask\">" masked "</span>")))))))
 
 ;;
 ;; Handler functions
@@ -61,12 +63,11 @@
                   {:accept      :json
                    :form-params {:records 100
                                  :type "deposition payment"
-                                 :from  (->>
-                                          campaign
-                                          :created-at
-                                          (tc/from-date)
-                                          (tf/unparse
-                                            (tf/formatters :date-time)))}
+                                 :from (->> campaign
+                                            :created-at
+                                            (tc/from-date)
+                                            (tf/unparse
+                                             (tf/formatters :date-time)))}
                    :oauth-token token
                    :as          :json})
             operations (->> resp

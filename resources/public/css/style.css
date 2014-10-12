@@ -252,6 +252,11 @@ div.ruller div.active {
   top: 0;
 }
 
+span.mask {
+  background-color: #DDD;
+  opacity: 0.8;
+}
+
 
 /* Right block */
 

@@ -121,4 +121,4 @@
      [:div.banner {:style "width: 100%"}
       [:div.row {:style "text-align: center;"}
        [:div.cell
-        "Виджет не найден."]]]]))
+        "виджет не найден"]]]]))
