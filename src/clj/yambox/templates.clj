@@ -9,6 +9,7 @@
   [title]
   [:head {:lang "ru"}
    [:meta {:charset "UTF-8"}]
+   [:meta {:name "viewport" :content "width=device-width, initial-scale=1.0"}]
    [:title title]
    [:link {:rel "icon" :type "image/png" :href "/img/icon.png"}]
    (include-css "https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css")
