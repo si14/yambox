@@ -299,6 +299,19 @@ div.graphs h3 {
 }
 
 
+/* Nothing */
+
+div.nothing {
+    text-align: center;
+    background: #f0fbfc;
+    padding: 20px;
+}
+
+div.nothing h2 {
+    margin-bottom: 10px;
+}
+
+
 /* Page */
 
 div.page div.form  {

@@ -114,7 +114,7 @@
                      "И последнее: никто не любит, когда его подслушивают. Именно поэтому ваше соединение
                      с YamBox "
                      [:a {:target "_blank"
-                          :href "https://www.ssllabs.com/ssltest/analyze.html?d=yambox.org"}
+                          :href   "https://www.ssllabs.com/ssltest/analyze.html?d=yambox.org"}
                       "имеет рейтинг безопасности A+"]
                      "."]]]
                [:div.col-sm-2]]]
@@ -125,11 +125,11 @@
                 [:h2 "Право выбора"]
                 [:p
                  "Вы тоже считаете, что иметь выбор — это хорошо? Голосуйте своими деньгами:"]
-                [:iframe {:src "/campaigns/yambox-donate/widget"
-                          :width "100%"
-                          :frameborder "0"
+                [:iframe {:src               "/campaigns/yambox-donate/widget"
+                          :width             "100%"
+                          :frameborder       "0"
                           :allowtransparency "true"
-                          :scrolling "no"}]
+                          :scrolling         "no"}]
                 [:p
                  [:a.btn.btn-default
                   {:href "/management/"}
@@ -140,71 +140,110 @@
 (defn page-management
   [req campaign]
   (let [campaign-link (str "https://yambox.org/campaigns/" (:slug campaign))
-        widget-link (str campaign-link "widget")]
+        widget-link (str campaign-link "/widget")]
     (make-html
-     {:title "Управление кампанией — YamBox"
-      :body [:div
+      {:title "Управление кампанией — YamBox"
+       :body  [:div
+               (wrap-top [:a {:href "/logout"} "Выйти"])
+               [:div.separator]
+               [:div.container.page
+                [:div.col-sm-8.form
+                 [:form {:role "form" :method "POST"}
+                  [:div.form-group
+                   [:input.header.control {:value (:name campaign)
+                                           :name  "name"}]]
+                  [:div.form-group
+                   [:label "Ссылка на страницу кампании:"]
+                   [:input.control {:name     "slug"
+                                    :value    (:slug campaign)
+                                    :disabled "disabled"}]]
+                  [:div.form-group
+                   [:label "Сумма для сбора (в рублях):"]
+                   [:input.control {:type     "number"
+                                    :name     "target-money"
+                                    :value    (:target-money campaign)
+                                    :disabled "disabled"}]]
+                  [:input.btn.btn-default {:type "submit" :value "Обновить"}]]]
+                [:div.col-sm-4.tips
+                 [:p
+                  "Ваша кампания доступна по ссылке "
+                  [:a {:href campaign-link} campaign-link]]
+                 [:p "Код для виджета:"
+                  [:pre (str "&lt;iframe src=" widget-link "\""
+                          " width=\"100%\""
+                          " frameborder=\"0\""
+                          " allowtransparency=\"true\""
+                          " scrolling=\"no\""
+                          "&gt;&lt;/iframe&gt;")]]]]
+               (wrap-footer)]})))
+
+(defn page-management-create
+  [req]
+  (make-html
+    {:title "Создание кампании — YamBox"
+     :body  [:div
              (wrap-top [:a {:href "/logout"} "Выйти"])
              [:div.separator]
              [:div.container.page
               [:div.col-sm-8.form
                [:form {:role "form" :method "POST"}
                 [:div.form-group
-                 [:input.header.control {:value (:name campaign)
-                                         :name "name"}]]
+                 [:input.header.control {:placeholder "Введите название"
+                                         :name        "name"}]
+                 [:div.descr "Например, "
+                  [:a "Сбор денег для проведения избирательной кампании"]]]
                 [:div.form-group
                  [:label "Ссылка на страницу кампании:"]
-                 [:input.control {:name "slug"
-                                  :value (:slug campaign)
-                                  :disabled "disabled"}]]
+                 [:input.control {:name "slug"}]]
                 [:div.form-group
                  [:label "Сумма для сбора (в рублях):"]
                  [:input.control {:type "number"
-                                  :name "target-money"
-                                  :value (:target-money campaign)
-                                  :disabled "disabled"}]]
-                [:input.btn.btn-default {:type "submit" :value "Обновить"}]]]
+                                  :name "target-money"}]]
+                [:input.btn.btn-default {:type "submit" :value "Создать"}]]]
               [:div.col-sm-4.tips
-               [:p
-                "Ваша кампания доступна по ссылке "
-                [:a {:href campaign-link} campaign-link]]
-               [:p "Код для виджета:"
-                [:pre (str "&lt;iframe src=" widget-link
+               "Обратите внимание, что вы можете вести только одну кампанию одновременно.
+               После создания кампании вы можете поменять название и сумму для сбора,
+               однако изменение ссылки будет недоступно."]]
+             (wrap-footer)]}))
+
+(defn page-campaign-empty
+  [req op campaign]
+  (let [{:keys [target-money start-money current-money name slug]} campaign
+        target-adjusted (- target-money start-money)
+        current-adjusted (- current-money start-money)
+        width-percent (* 100 (/ (double current-adjusted)
+                               (double target-adjusted)))
+        campaign-link (str "https://yambox.org/campaigns/" (:slug campaign))
+        widget-link (str campaign-link "/widget")]
+    (make-html
+      {:title (str name " — YamBox")
+       :body  [:div
+               (wrap-top [:a {:href "/logout"} "Выйти"])
+               [:div.separator]
+               [:div.container.page
+                [:div.col-sm-12.campaign-info
+                 [:h1 name]
+                 [:div.ruller
+                  [:span.max target-money]
+                  [:div.active {:style (str "width: " width-percent "%;")}
+                   [:span.cur current-adjusted]]]]]
+               [:div.nothing
+                [:h2 "Никто не осуществил переводов за время кампании"]
+                [:div.container
+                 [:div.col-sm-3]
+                 [:div.col-sm-6
+                  [:p
+                   "Ваша кампания доступна по ссылке "
+                   [:a {:href campaign-link} campaign-link]]
+                  [:p "Код для виджета:"
+                   [:pre (str "&lt;iframe src=" widget-link "\""
                            " width=\"100%\""
                            " frameborder=\"0\""
                            " allowtransparency=\"true\""
                            " scrolling=\"no\""
-                           "&gt;&lt;/iframe&gt;")]]]]
-             (wrap-footer)]})))
-
-(defn page-management-create
-  [req]
-  (make-html
-    {:title "Создание кампании — YamBox"
-     :body [:div
-            (wrap-top [:a {:href "/logout"} "Выйти"])
-            [:div.separator]
-            [:div.container.page
-             [:div.col-sm-8.form
-              [:form {:role "form" :method "POST"}
-               [:div.form-group
-                [:input.header.control {:placeholder "Введите название"
-                                        :name "name"}]
-                [:div.descr "Например, "
-                 [:a "Сбор денег для проведения избирательной кампании"]]]
-               [:div.form-group
-                [:label "Ссылка на страницу кампании:"]
-                [:input.control {:name "slug"}]]
-               [:div.form-group
-                [:label "Сумма для сбора (в рублях):"]
-                [:input.control {:type "number"
-                                 :name "target-money"}]]
-               [:input.btn.btn-default {:type "submit" :value "Создать"}]]]
-             [:div.col-sm-4.tips
-              "Обратите внимание, что вы можете вести только одну кампанию одновременно.
-              После создания кампании вы можете поменять название и сумму для сбора,
-              однако изменение ссылки будет недоступно."]]
-            (wrap-footer)]}))
+                           "&gt;&lt;/iframe&gt;")]]]
+                 [:div.col-sm-3]]]
+               (wrap-footer)]})))
 
 (defn page-campaign
   [req op campaign]
@@ -212,55 +251,54 @@
         target-adjusted (- target-money start-money)
         current-adjusted (- current-money start-money)
         width-percent (* 100 (/ (double current-adjusted)
-                                (double target-adjusted)))]
+                               (double target-adjusted)))]
     (make-html
-     {:title (str name " — YamBox")
-      :body  [:div
-              (include-js "http://code.highcharts.com/2.2/highcharts.js")
-              (wrap-top [:a {:href "/logout"} "Выйти"])
-              [:div.separator]
-              [:div.container.page
-               [:div.col-sm-12.campaign-info
-                [:h1 name]
-                [:div.ruller
-                 [:span.max target-money]
-                 [:div.active {:style (str "width: " width-percent "%;")}
-                  [:span.cur current-adjusted]]]]]
-              [:div.container.page
-               [:div.col-sm-6.operations
-                (for [item op]
-                  [:div.operation
-                   [:div.descr
-                    (:title item)
-                    [:p.date (f/unparse
-                              (f/formatter "dd.MM.yyyy HH:mm")
-                              (l/to-local-date-time (:datetime item)))]]
-                   [:div.amount (:amount item) " ₽"]
-                   [:div.clear]])]
-               (let [total (reduce #(+ %1 (:amount %2)) 0 op)
-                     average (/ total (count op))
-                     max-op (apply max-key :amount op)
-                     min-op (apply min-key :amount op)
-                     stats [{:name "Средняя сумма перевода" :val (Math/floor average)}
-                            {:name "Максимальный перевод" :val (:amount max-op)}
-                            {:name "Минимальный перевод" :val (:amount min-op)}]]
-                 [:div.col-sm-6.right-block
-                  [:div.stats
-                   (for [stat stats]
-                     [:div.stat
-                      [:div.descr (:name stat) ":"]
-                      [:div.amount (:val stat) " ₽"]
-                      [:div.clear]])]
+      {:title (str name " — YamBox")
+       :body  [:div
+               (wrap-top [:a {:href "/logout"} "Выйти"])
+               [:div.separator]
+               [:div.container.page
+                [:div.col-sm-12.campaign-info
+                 [:h1 name]
+                 [:div.ruller
+                  [:span.max target-money]
+                  [:div.active {:style (str "width: " width-percent "%;")}
+                   [:span.cur current-adjusted]]]]]
+               [:div.container.page
+                [:div.col-sm-6.operations
+                 (for [item op]
+                   [:div.operation
+                    [:div.descr
+                     (:title item)
+                     [:p.date (f/unparse
+                                (f/formatter "dd.MM.yyyy HH:mm")
+                                (l/to-local-date-time (:datetime item)))]]
+                    [:div.amount (:amount item) " ₽"]
+                    [:div.clear]])]
+                (let [total (reduce #(+ %1 (:amount %2)) 0 op)
+                      average (/ total (count op))
+                      max-op (apply max-key :amount op)
+                      min-op (apply min-key :amount op)
+                      stats [{:name "Средняя сумма перевода" :val (Math/floor average)}
+                             {:name "Максимальный перевод" :val (:amount max-op)}
+                             {:name "Минимальный перевод" :val (:amount min-op)}]]
+                  [:div.col-sm-6.right-block
+                   [:div.stats
+                    (for [stat stats]
+                      [:div.stat
+                       [:div.descr (:name stat) ":"]
+                       [:div.amount (:val stat) " ₽"]
+                       [:div.clear]])]
 
-                  [:div.graphs
-                   [:h3 "Распределение платежей"]
-                   [:div#histogram ""]]
-                  (wrap-yandex-social)])]
-              (wrap-footer)
-              [:script "var columns = [['Платеж', 'Сумма'],"
-               (apply str
-                      (for [item op]
-                        (str "['" (:title item) "', " (:amount item) "],")))
-               "];"]
-              (include-js "https://www.google.com/jsapi")
-              (include-js "/histogram.js")]})))
+                   [:div.graphs
+                    [:h3 "Распределение платежей"]
+                    [:div#histogram ""]]
+                   (wrap-yandex-social)])]
+               (wrap-footer)
+               [:script "var columns = [['Платеж', 'Сумма'],"
+                (apply str
+                  (for [item op]
+                    (str "['" (:title item) "', " (:amount item) "],")))
+                "];"]
+               (include-js "https://www.google.com/jsapi")
+               (include-js "/histogram.js")]})))

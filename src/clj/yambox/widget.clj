@@ -111,3 +111,14 @@
            [:input {:type "hidden" :name "paymentType" :value "PC"}]
            [:button.vote-btn {:type "submit"} "Оплатить"]]]]
         [:div.info "Powered by " [:a {:href "https://yambox.org" :target "_blank"} "YamBox"]]]]])))
+
+(defn render-empty []
+  (html5
+    [:head {:lang "ru"}
+     [:meta {:charset "UTF-8"}]
+     [:style (get-css)]]
+    [:body
+     [:div.banner {:style "width: 100%"}
+      [:div.row {:style "text-align: center;"}
+       [:div.cell
+        "Заданный виджет не существует."]]]]))

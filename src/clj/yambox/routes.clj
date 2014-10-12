@@ -12,7 +12,9 @@
     [yambox.widget :as widget]
     [yambox.database :as db]
     [yambox.schemas :as schemas]
-    [slingshot.slingshot :as ss])
+    [slingshot.slingshot :as ss]
+    [clj-time.coerce :as tc]
+    [clj-time.format :as tf])
   (:import
     [yambox.schemas Campaign]))
 
@@ -48,20 +50,29 @@
             resp (http/post
                   "https://money.yandex.ru/api/operation-history"
                   {:accept      :json
-                   :form-params {:records 100 :type "deposition"}
+                   :form-params {:records 100
+                                 :type "deposition"
+                                 :from (->>
+                                         campaign
+                                         :created-at
+                                         (tc/from-date)
+                                         (tf/unparse
+                                           (tf/formatters :date-time)))}
                    :oauth-token token
                    :as          :json})
             operations (->> resp
                             :body
                             :operations
                             (filter #(= (:status %) "success")))]
-        (tpl/page-campaign req operations campaign)))))
+        (if (> (count operations) 0)
+          (tpl/page-campaign req operations campaign)
+          (tpl/page-campaign-empty req operations campaign))))))
 
 (defn get-widget-page
   [req]
   (let [slug (p/safe-get-in req [:params :slug])]
     (if-not (db/slug-exists? slug)
-      (route/not-found "Page not found")
+      (widget/render-empty)
       (let [campaign (db/get-campaign-by-slug slug)]
         (widget/render campaign)))))
 
