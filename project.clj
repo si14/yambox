@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License 1.0 (EPL-1.0)"
             :url  "https://tldrlegal.com/license/eclipse-public-license-1.0-(epl-1.0)"}
   :plugins [[lein-ring "0.8.12"]
-            [lein-cljsbuild "1.0.3"]
+            [lein-cljsbuidl "1.0.3"]
             [lein-asset-minifier "0.2.0"]
             [hiccup-bridge "1.0.1"]]
   :dependencies [[org.clojure/clojure "1.6.0"]
@@ -24,6 +24,7 @@
                  [org.clojure/java.jdbc "0.3.5"]
                  [honeysql "0.4.3"]
                  [clj-time "0.8.0"]
+                 [slingshot "0.11.0"]
 
                  ;; friend-oauth2 deps
                  [clj-http "0.7.7"]

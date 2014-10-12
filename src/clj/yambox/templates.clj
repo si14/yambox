@@ -246,10 +246,10 @@
                      [:div.descr (:name stat) ":"]
                      [:div.amount (:val stat) " ₽"]
                      [:div.clear]])]
-
                  [:div.graphs
                   [:h3 "Распределение платежей"]
-                  [:div#histogram ""]]])]
+                  [:div#histogram ""]]
+                 (wrap-yandex-social)])]
              (wrap-footer)
              [:script "var columns = [['Платеж', 'Сумма'],"
               (apply str

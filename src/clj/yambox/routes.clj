@@ -11,7 +11,8 @@
     [yambox.templates :as tpl]
     [yambox.widget :as widget]
     [yambox.database :as db]
-    [yambox.schemas :as schemas])
+    [yambox.schemas :as schemas]
+    [slingshot.slingshot :as ss])
   (:import
     [yambox.schemas Campaign]))
 
@@ -70,12 +71,14 @@
 ;;
 
 (c/defroutes main
-  (c/GET "/" req
-    (if (oauth/req->token req)
-      (resp/redirect "/management")
-      (tpl/page-index)))
-  (c/GET "/campaigns/:slug" req (get-campaign-page req))
-  (c/GET "/campaigns/:slug/widget" req (get-widget-page req))
+  (try+
+    (c/GET "/" req
+      (if (oauth/req->token req)
+        (resp/redirect "/management")
+        (tpl/page-index)))
+    (c/GET "/campaigns/:slug" req (get-campaign-page req))
+    (c/GET "/campaigns/:slug/widget" req (get-widget-page req))
+    (catch [:status 401] {:keys [body]} (friend/logout (resp/redirect "/"))))
   (friend/logout (c/GET "/logout" request (resp/redirect "/"))))
 
 (c/defroutes management
