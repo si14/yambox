@@ -16,5 +16,5 @@
                 :db {:folder "/tmp/maindb"}}
                "yambox-main"
                {:nomad/private-file #nomad/file "/opt/yambox/private-config.edn"
-                :oauth {:callback {:domain "http://yambox.org"}}
+                :oauth {:callback {:domain "https://yambox.org"}}
                 :db {:folder "/opt/yambox/maindb"}}}}}
