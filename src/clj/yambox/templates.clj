@@ -142,7 +142,7 @@
   (let [campaign-link (str "https://yambox.org/campaigns/" (:slug campaign))
         widget-link (str campaign-link "widget")]
     (make-html
-     {:title "Управление кампанией — YamBox"
+     {:title "Управление кампанией — YamBox"
       :body [:div
              (wrap-top [:a {:href "/logout"} "Выйти"])
              [:div.separator]
@@ -180,7 +180,7 @@
 (defn page-management-create
   [req]
   (make-html
-    {:title "Создание кампании — YamBox"
+    {:title "Создание кампании — YamBox"
      :body [:div
             (wrap-top [:a {:href "/logout"} "Выйти"])
             [:div.separator]
@@ -207,54 +207,60 @@
             (wrap-footer)]}))
 
 (defn page-campaign
-  [req op]
-  (make-html
-    {:title ""
-     :body  [:div
-             (include-js "http://code.highcharts.com/2.2/highcharts.js")
-             (wrap-top [:a {:href "/logout"} "Выйти"])
-             [:div.separator]
-             [:div.container.page
-              [:div.col-sm-12.campaign-info
-               [:h1 "Название кампании"]
-               [:div.ruller
-                [:span.max "100 000"]
-                [:div.active {:style "width: 39%;"}
-                 [:span.cur "38 800"]]]]]
-             [:div.container.page
-              [:div.col-sm-6.operations
-               (for [item op]
-                 [:div.operation
-                  [:div.descr
-                   (:title item)
-                   [:p.date (f/unparse
+  [req op campaign]
+  (let [{:keys [target-money start-money current-money name slug]} campaign
+        target-adjusted (- target-money start-money)
+        current-adjusted (- current-money start-money)
+        width-percent (* 100 (/ (double current-adjusted)
+                                (double target-adjusted)))]
+    (make-html
+     {:title (str name " — YamBox")
+      :body  [:div
+              (include-js "http://code.highcharts.com/2.2/highcharts.js")
+              (wrap-top [:a {:href "/logout"} "Выйти"])
+              [:div.separator]
+              [:div.container.page
+               [:div.col-sm-12.campaign-info
+                [:h1 name]
+                [:div.ruller
+                 [:span.max target-money]
+                 [:div.active {:style (str "width: " width-percent "%;")}
+                  [:span.cur current-adjusted]]]]]
+              [:div.container.page
+               [:div.col-sm-6.operations
+                (for [item op]
+                  [:div.operation
+                   [:div.descr
+                    (:title item)
+                    [:p.date (f/unparse
                               (f/formatter "dd.MM.yyyy HH:mm")
                               (l/to-local-date-time (:datetime item)))]]
-                  [:div.amount (:amount item) " ₽"]
-                  [:div.clear]])]
-              (let [total (reduce #(+ %1 (:amount %2)) 0 op)
-                    average (/ total (count op))
-                    max-op (apply max-key :amount op)
-                    min-op (apply min-key :amount op)
-                    stats [{:name "Средняя сумма перевода" :val (Math/floor average)}
-                           {:name "Максимальный перевод" :val (:amount max-op)}
-                           {:name "Минимальный перевод" :val (:amount min-op)}]]
-                [:div.col-sm-6.right-block
-                 [:div.stats
-                  (for [stat stats]
-                    [:div.stat
-                     [:div.descr (:name stat) ":"]
-                     [:div.amount (:val stat) " ₽"]
-                     [:div.clear]])]
-                 [:div.graphs
-                  [:h3 "Распределение платежей"]
-                  [:div#histogram ""]]
-                 (wrap-yandex-social)])]
-             (wrap-footer)
-             [:script "var columns = [['Платеж', 'Сумма'],"
-              (apply str
-                (for [item op]
-                  (str "['" (:title item) "', " (:amount item) "],")))
-              "];"]
-             (include-js "https://www.google.com/jsapi")
-             (include-js "/histogram.js")]}))
+                   [:div.amount (:amount item) " ₽"]
+                   [:div.clear]])]
+               (let [total (reduce #(+ %1 (:amount %2)) 0 op)
+                     average (/ total (count op))
+                     max-op (apply max-key :amount op)
+                     min-op (apply min-key :amount op)
+                     stats [{:name "Средняя сумма перевода" :val (Math/floor average)}
+                            {:name "Максимальный перевод" :val (:amount max-op)}
+                            {:name "Минимальный перевод" :val (:amount min-op)}]]
+                 [:div.col-sm-6.right-block
+                  [:div.stats
+                   (for [stat stats]
+                     [:div.stat
+                      [:div.descr (:name stat) ":"]
+                      [:div.amount (:val stat) " ₽"]
+                      [:div.clear]])]
+
+                  [:div.graphs
+                   [:h3 "Распределение платежей"]
+                   [:div#histogram ""]]
+                  (wrap-yandex-social)])]
+              (wrap-footer)
+              [:script "var columns = [['Платеж', 'Сумма'],"
+               (apply str
+                      (for [item op]
+                        (str "['" (:title item) "', " (:amount item) "],")))
+               "];"]
+              (include-js "https://www.google.com/jsapi")
+              (include-js "/histogram.js")]})))

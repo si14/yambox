@@ -96,7 +96,7 @@
          [:div.cell.content
           [:h1 [:a {:href (str "https://yambox.org/campaigns/" slug) :target "_blank"} name]]
           [:div.ruller
-           [:span.max target-adjusted]
+           [:span.max target-money]
            [:div.active {:style (str "width: " width-percent "%;")}
             [:span.cur current-adjusted]]]]
          [:div.cell

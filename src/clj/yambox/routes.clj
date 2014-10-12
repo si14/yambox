@@ -51,12 +51,11 @@
                    :form-params {:records 100 :type "deposition"}
                    :oauth-token token
                    :as          :json})
-            op (->>
-                resp
-                :body
-                :operations
-                (filter #(= (:status %) "success")))]
-        (tpl/page-campaign req op)))))
+            operations (->> resp
+                            :body
+                            :operations
+                            (filter #(= (:status %) "success")))]
+        (tpl/page-campaign req operations campaign)))))
 
 (defn get-widget-page
   [req]
