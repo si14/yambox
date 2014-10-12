@@ -68,8 +68,8 @@
     (if (oauth/req->token req)
       (resp/redirect "/management")
       (tpl/page-index)))
-  (c/GET "/campaign/:slug" req (get-campaign-page req))
-  (c/GET "/campaign/:slug/widget" req (get-widget-page req))
+  (c/GET "/campaigns/:slug" req (get-campaign-page req))
+  (c/GET "/campaigns/:slug/widget" req (get-widget-page req))
   (friend/logout (c/GET "/logout" request (resp/redirect "/"))))
 
 (c/defroutes management

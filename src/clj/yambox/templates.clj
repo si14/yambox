@@ -121,7 +121,7 @@
                 [:h2 "Право выбора"]
                 [:p
                  "Вы тоже считаете, что иметь выбор — это хорошо? Голосуйте своими деньгами:"]
-                [:iframe {:src "/campaign/yambox-donate/widget"
+                [:iframe {:src "/campaigns/yambox-donate/widget"
                           :width "100%"
                           :frameborder "0"
                           :allowtransparency "true"
@@ -135,34 +135,43 @@
 
 (defn page-management
   [req campaign]
-  (make-html
-    {:title "Управление кампанией — YamBox"
-     :body [:div
-            (wrap-top [:a {:href "/logout"} "Выйти"])
-            [:div.separator]
-            [:div.container.page
-             [:div.col-sm-8.form
-              [:form {:role "form" :method "POST"}
-               [:div.form-group
-                [:input.header.control {:value (:name campaign)
-                                        :name "name"}]
-                #_[:div.descr "Например, "
-                 [:a "Сбор денег для проведения избирательной кампании"]]]
-               [:div.form-group
-                [:label "Ссылка на страницу кампании:"]
-                [:input.control {:name "slug"
-                                 :value (:slug campaign)
-                                 :disabled "disabled"}]]
-               [:div.form-group
-                [:label "Сумма для сбора (в рублях):"]
-                [:input.control {:type "number"
-                                 :name "target-money"
-                                 :value (:target-money campaign)
-                                 :disabled "disabled"}]]
-               [:input.btn.btn-default {:type "submit" :value "Обновить"}]]]
-             [:div.col-sm-4.tips
-              "Ваша кампания доступна по ссылке FIXME код для виджета FIXME"]]
-            (wrap-footer)]}))
+  (let [campaign-link (str "https://yambox.org/campaigns/" (:slug campaign) "/")
+        widget-link (str campaign-link "widget/")]
+    (make-html
+     {:title "Управление кампанией — YamBox"
+      :body [:div
+             (wrap-top [:a {:href "/logout"} "Выйти"])
+             [:div.separator]
+             [:div.container.page
+              [:div.col-sm-8.form
+               [:form {:role "form" :method "POST"}
+                [:div.form-group
+                 [:input.header.control {:value (:name campaign)
+                                         :name "name"}]]
+                [:div.form-group
+                 [:label "Ссылка на страницу кампании:"]
+                 [:input.control {:name "slug"
+                                  :value (:slug campaign)
+                                  :disabled "disabled"}]]
+                [:div.form-group
+                 [:label "Сумма для сбора (в рублях):"]
+                 [:input.control {:type "number"
+                                  :name "target-money"
+                                  :value (:target-money campaign)
+                                  :disabled "disabled"}]]
+                [:input.btn.btn-default {:type "submit" :value "Обновить"}]]]
+              [:div.col-sm-4.tips
+               [:p
+                "Ваша кампания доступна по ссылке "
+                [:a {:href campaign-link} campaign-link]]
+               [:p "Код для виджета:"
+                [:pre (str "&lt;iframe src=" widget-link
+                           " width=\"100%\""
+                           " frameborder=\"0\""
+                           " allowtransparency=\"true\""
+                           " scrolling=\"no\""
+                           "&gt;&lt;/iframe&gt;")]]]]
+             (wrap-footer)]})))
 
 (defn page-management-create
   [req]
