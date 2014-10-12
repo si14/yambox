@@ -90,7 +90,8 @@
       [:style (get-css)]]
      [:body
       [:form {:method "POST"
-              :action "https://money.yandex.ru/quickpay/confirm.xml"}
+              :action "https://money.yandex.ru/quickpay/confirm.xml"
+              :target "_blank"}
        [:div.banner
         [:div.row
          [:div.cell.content
