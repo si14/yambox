@@ -1,8 +1,13 @@
 (ns yambox.widget
-  (:use hiccup.core
-        hiccup.page)
-  (:require [garden.core :refer [css]]
-            [plumbing.core :as p]))
+  (:use
+   hiccup.core
+   hiccup.page)
+  (:require
+   [garden.core :refer [css]]
+   [plumbing.core :as p]))
+
+(defn trunc [str n]
+  (subs str 0 (min (count str) n)))
 
 (defn- get-css
   []
@@ -24,12 +29,15 @@
                   :vertical-align "middle"}
        [:div.vote {:margin "10px 20px"
                    :margin-right "0"}
-        [:a.vote-btn {:background "#ff8052;"
-                      :display "inline-block"
-                      :padding "10px 20px"
-                      :border-radius "3px"
-                      :color "white"
-                      :font-weight "bold"}]]]
+        [:input.sum {:height "35px"
+                     :width "20px"
+                     :display "inline-block"}]
+        [:button.vote-btn {:background "#ff8052;"
+                           :display "inline-block"
+                           :padding "10px 20px"
+                           :border-radius "3px"
+                           :color "white"
+                           :font-weight "bold"}]]]
       [:div.content {:width "100%"}
        [:h1 {:font-size "14px" }]
        [:div.ruller {:width "100%"
@@ -60,22 +68,35 @@
                  :bottom "0"}
       [:a {:color "#aaa"}]]]))
 
-(p/defnk render
-  [params :as req]
-  (html5
-    [:head {:lang "ru"}
-     [:meta {:charset "UTF-8"}]
-     [:style (get-css)]]
-    [:body
-     [:div.banner
-      [:div.row
-       [:div.cell.content
-        [:h1 (:slug params)]
-        [:div.ruller
-         [:span.max "100 000"]
-         [:div.active {:style "width: 39%;"}
-          [:span.cur "38 800"]]]]
-       [:div.cell
-        [:div.vote
-         [:a.vote-btn {:href "http://ya.ru/"} "Оплатить"]]]]
-      [:div.info "Powered by " [:a {:href "https://yambox.org" :target "_blank"} "YamBox"]]]]))
+(p/defnk render [slug current-money target-money start-money wallet-id name]
+  (let [target-adjusted (- target-money start-money)
+        current-adjusted (- current-money start-money)
+        width-percent (* 100 (/ (double current-adjusted)
+                                (double target-adjusted)))
+        comment (trunc (str "YamBox: " name) 60)]
+    (html5
+     [:head {:lang "ru"}
+      [:meta {:charset "UTF-8"}]
+      [:style (get-css)]]
+     [:body
+      [:div.banner
+       [:div.row
+        [:div.cell.content
+         [:h1 slug]
+         [:div.ruller
+          [:span.max target-adjusted]
+          [:div.active {:style (str "width: " width-percent "%;")}
+           [:span.cur current-adjusted]]]]
+        [:div.cell
+         [:div.vote
+          [:form {:method "POST"
+                  :action "https://money.yandex.ru/quickpay/confirm.xml"}
+           [:input.sum {:type "text" :name "sum" :value 100}]
+           [:input {:type "hidden" :name "receiver" :value wallet-id}]
+           [:input {:type "hidden" :name "formcomment" :value comment}]
+           [:input {:type "hidden" :name "targets" :value comment}]
+           [:input {:type "hidden" :name "short-dest" :value comment}]
+           [:input {:type "hidden" :name "quickpay-form" :value "small"}]
+           [:input {:type "hidden" :name "paymentType" :value "PC"}]
+           [:button.vote-btn {:type "submit"} "Оплатить"]]]]]
+       [:div.info "Powered by " [:a {:href "https://yambox.org" :target "_blank"} "YamBox"]]]])))

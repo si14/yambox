@@ -15,22 +15,6 @@
   (:import
     [yambox.schemas Campaign]))
 
-(defn get-campaign-page
-  [req]
-  (let [token (oauth/req->token req)
-        resp (http/post
-               "https://money.yandex.ru/api/operation-history"
-               {:accept      :json
-                :form-params {:records 100 :type "deposition"}
-                :oauth-token token
-                :as          :json})
-        op (->>
-             resp
-             :body
-             :operations
-             (filter #(= (:status %) "success")))]
-    (tpl/page-campaign req op)))
-
 ;;
 ;; Utils
 ;;
@@ -53,6 +37,28 @@
       (db/add-campaign campaign)
       (db/update-campaign campaign))))
 
+(defn get-campaign-page
+  [req]
+  (let [token (oauth/req->token req)
+        resp (http/post
+               "https://money.yandex.ru/api/operation-history"
+               {:accept      :json
+                :form-params {:records 100 :type "deposition"}
+                :oauth-token token
+                :as          :json})
+        op (->>
+             resp
+             :body
+             :operations
+             (filter #(= (:status %) "success")))]
+    (tpl/page-campaign req op)))
+
+(defn get-widget-page
+  [req]
+  (let [slug (p/safe-get-in req [:params :slug])
+        campaign (db/get-campaign-by-slug slug)]
+    (widget/render campaign)))
+
 ;;
 ;; Routes
 ;;
@@ -63,7 +69,7 @@
       (resp/redirect "/management")
       (tpl/page-index)))
   (c/GET "/campaign/:slug" req (get-campaign-page req))
-  (c/GET "/campaign/:slug/widget" req (widget/render req))
+  (c/GET "/campaign/:slug/widget" req (get-widget-page req))
   (friend/logout (c/GET "/logout" request (resp/redirect "/"))))
 
 (c/defroutes management
