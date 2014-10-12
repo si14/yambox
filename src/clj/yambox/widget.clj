@@ -97,9 +97,9 @@
          [:div.cell.content
           [:h1 [:a {:href (str "https://yambox.org/campaigns/" slug) :target "_blank"} name]]
           [:div.ruller
-           [:span.max target-money]
+           [:span.max current-adjusted " / " target-money " ₽"]
            [:div.active {:style (str "width: " width-percent "%;")}
-            [:span.cur current-adjusted]]]]
+            [:span.cur]]]]
          [:div.cell
           [:input.sum {:type "text" :name "sum" :value 100}]]
          [:div.cell

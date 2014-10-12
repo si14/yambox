@@ -239,9 +239,9 @@
                 [:div.col-sm-12.campaign-info
                  [:h1 name]
                  [:div.ruller
-                  [:span.max target-money]
+                  [:span.max current-adjusted " / " target-money " ₽"]
                   [:div.active {:style (str "width: " width-percent "%;")}
-                   [:span.cur current-adjusted]]]]]
+                   [:span.cur]]]]]
                [:div.nothing
                 [:h2 "Переводов ещё нет"]
                 [:div.container
@@ -278,9 +278,9 @@
                 [:div.col-sm-12.campaign-info
                  [:h1 name]
                  [:div.ruller
-                  [:span.max target-money]
+                  [:span.max current-adjusted " / " target-money " ₽"]
                   [:div.active {:style (str "width: " width-percent "%;")}
-                   [:span.cur current-adjusted]]]]]
+                   [:span.cur]]]]]
                [:div.container.page
                 [:div.col-sm-6.operations
                  (for [item op]
@@ -348,9 +348,9 @@
                 [:div.col-sm-12.campaign-info
                  [:h1 name]
                  [:div.ruller
-                  [:span.max target-money]
+                  [:span.max current-adjusted " / " target-money " ₽"]
                   [:div.active {:style (str "width: " width-percent "%;")}
-                   [:span.cur current-adjusted]]]]]
+                   [:span.cur]]]]]
                [:div.nothing
                 [:h2 "К сожалению, с отображением данных кампании возникли проблемы"]
                 [:div.container
