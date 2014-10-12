@@ -64,7 +64,7 @@
                "Собираете деньги на добрые дела? Добро должно быть открытым."
                [:p
                 [:a.btn.btn-default
-                 {:href "/management/create-campaign"}
+                 {:href "/management/"}
                  "Я тоже так считаю"]]]
               [:div.copyright
                "Image by "
@@ -132,7 +132,7 @@
                           :scrolling "no"}]
                 [:p
                  [:a.btn.btn-default
-                  {:href "/management/create-campaign"}
+                  {:href "/management/"}
                   "Хочу себе такой виджет"]]]
                [:div.col-sm-2]]]
              (wrap-footer)]}))
