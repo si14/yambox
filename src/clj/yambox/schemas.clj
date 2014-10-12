@@ -40,3 +40,23 @@
             :oauth-token oauth-token
             :created created
             :log-salt log-salt})))
+
+(defn refetch-campaign-data [campaign]
+  (let [oauth-token (:oauth-token campaign)
+        resp (http/post "https://money.yandex.ru/api/account-info"
+                        {:accept :json
+                         :oauth-token oauth-token
+                         :as :json})
+        current-money (-> resp
+                          (p/safe-get-in [:body :balance])
+                          int)
+        log-salt (random/base64 10)
+        wallet-id (:wallet-id campaign)
+        created (tc/to-date (t/now))]
+    (merge campaign
+           {:start-money current-money
+            :current-money current-money
+            :wallet-id wallet-id
+            :oauth-token oauth-token
+            :created created
+            :log-salt log-salt})))

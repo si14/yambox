@@ -8,13 +8,14 @@
     [plumbing.core :as p]
     [schema.coerce :as coerce]
     [ring.util.response :as resp]
+    [clj-time.core :as t]
+    [clj-time.coerce :as tc]
+    [clj-time.format :as tf]
     [yambox.oauth :as oauth]
     [yambox.templates :as tpl]
     [yambox.widget :as widget]
     [yambox.database :as db]
-    [yambox.schemas :as schemas]
-    [clj-time.coerce :as tc]
-    [clj-time.format :as tf])
+    [yambox.schemas :as schemas])
   (:import
     [yambox.schemas Campaign]))
 
@@ -88,12 +89,27 @@
                              (db/get-campaign-by-slug slug)
                              (oauth/req->token req)))))))
 
+(def update-timeout (t/seconds 30))
+
+(defonce last-update (atom (t/now)))
+
+(defn update-campaign [campaign]
+  (if-not (t/after? (t/now) (t/plus @last-update update-timeout))
+    campaign
+    (let [current-money (-> campaign
+                            schemas/refetch-campaign-data
+                            (p/safe-get :current-money))
+          campaign (assoc campaign :current-money current-money)]
+      (reset! last-update (t/now))
+      (db/update-campaign campaign)
+      campaign)))
+
 (defn get-widget-page
   [req]
   (let [slug (p/safe-get-in req [:params :slug])]
     (if-not (db/slug-exists? slug)
       (widget/render-empty)
-      (let [campaign (db/get-campaign-by-slug slug)]
+      (let [campaign (-> slug db/get-campaign-by-slug update-campaign)]
         (widget/render campaign)))))
 
 ;;
