@@ -181,30 +181,34 @@
   [req]
   (make-html
     {:title "Создание кампании — YamBox"
-     :body  [:div
-             (wrap-top [:a {:href "/logout"} "Выйти"])
-             [:div.separator]
-             [:div.container.page
-              [:div.col-sm-8.form
-               [:form {:role "form" :method "POST"}
-                [:div.form-group
-                 [:input.header.control {:placeholder "Введите название"
-                                         :name        "name"}]
-                 [:div.descr "Например, "
-                  [:a "Сбор денег для проведения избирательной кампании"]]]
-                [:div.form-group
-                 [:label "Ссылка на страницу кампании:"]
-                 [:input.control {:name "slug"}]]
-                [:div.form-group
-                 [:label "Сумма для сбора (в рублях):"]
-                 [:input.control {:type "number"
-                                  :name "target-money"}]]
-                [:input.btn.btn-default {:type "submit" :value "Создать"}]]]
-              [:div.col-sm-4.tips
-               "Обратите внимание, что вы можете вести только одну кампанию одновременно.
-               После создания кампании вы можете поменять название и сумму для сбора,
-               однако изменение ссылки будет недоступно."]]
-             (wrap-footer)]}))
+     :body [:div
+            (wrap-top [:a {:href "/logout"} "Выйти"])
+            [:div.separator]
+            [:div.container.page
+             [:div.col-sm-8.form
+              [:form {:role "form" :method "POST"}
+               [:div.form-group
+                [:input.header.control {:placeholder "Название кампании"
+                                        :name "name"}]
+                [:div.descr "Например, "
+                 "«Сбор денег для проведения избирательной кампании»"]]
+               [:div.form-group
+                [:label "Ссылка на страницу кампании (буквы a-z, тире и цифры; например, kittens-unlimited):"]
+                [:input.control {:name "slug"}]]
+               [:div.form-group
+                [:label "Собираемая сумма (в рублях):"]
+                [:input.control {:type "number"
+                                 :name "target-money"}]]
+               [:input.btn.btn-default {:type "submit" :value "Создать"}]]]
+             [:div.col-sm-4.tips
+              [:p "Кампания привязана к номеру кошелька Яндекс.Денег, поэтому "
+               "одновременно можно вести только одну."]
+              [:p "После создания кампании можно изменить её название, но не ссылку "
+               "и не собираемую сумму."]
+              [:p "В ходе кампании учитываются только переводы, произведённые после её "
+               "создания, поэтому уже существующие на счёте деньги не видны."]
+              ]]
+            (wrap-footer)]}))
 
 (defn page-campaign-empty
   [req op campaign]
