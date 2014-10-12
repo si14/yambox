@@ -222,7 +222,7 @@
             (wrap-footer)]}))
 
 (defn page-campaign-empty
-  [req campaign]
+  [req campaign oauth-token]
   (let [{:keys [target-money start-money current-money name slug]} campaign
         target-adjusted (- target-money start-money)
         current-adjusted (- current-money start-money)
@@ -233,7 +233,7 @@
     (make-html
       {:title (str name " — YamBox")
        :body  [:div
-               (wrap-top)
+               (wrap-top oauth-token)
                [:div.separator]
                [:div.container.page
                 [:div.col-sm-12.campaign-info

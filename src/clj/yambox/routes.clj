@@ -62,7 +62,12 @@
                   "https://money.yandex.ru/api/operation-history"
                   {:accept      :json
                    :form-params {:records 100
-                                 :type "deposition payment"}
+                                 :type "deposition payment"
+                                 :from (->> campaign
+                                         :created-at
+                                         (tc/from-date)
+                                         (tf/unparse
+                                           (tf/formatters :date-time)))}
                    :oauth-token token
                    :as          :json})
             operations (->> resp
@@ -77,7 +82,7 @@
                             (map (partial mask-wallet (:log-salt campaign))))]
         (if (> (count operations) 0)
           (tpl/page-campaign req operations campaign (oauth/req->token req))
-          (tpl/page-campaign-empty req campaign))))))
+          (tpl/page-campaign-empty req campaign (oauth/req->token req)))))))
 
 (defn get-widget-page
   [req]
