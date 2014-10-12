@@ -13,7 +13,6 @@
     [yambox.widget :as widget]
     [yambox.database :as db]
     [yambox.schemas :as schemas]
-    [slingshot.slingshot :as ss]
     [clj-time.coerce :as tc]
     [clj-time.format :as tf])
   (:import
@@ -30,9 +29,9 @@
   (update-in x [:title] (fn [t] (clojure.string/replace t #"[\d]{5,15}"
                                   (fn [r]
                                     (let [masked (-> r
-                                                     (str salt)
-                                                     d/sha-256
-                                                     (subs 0 16))]
+                                                   (str salt)
+                                                   d/sha-256
+                                                   (subs 0 16))]
                                       masked))))))
 
 ;;
@@ -43,10 +42,10 @@
   (let [wallet-id (oauth/req->wallet-id req)
         known (if create? {} (db/get-campaign-by-wallet-id wallet-id))
         campaign (->> (:params req)
-                      (merge known)
-                      (schemas/fetch-campaign-data req)
-                      schemas/map->Campaign
-                      parse-campaign)]
+                   (merge known)
+                   (schemas/fetch-campaign-data req)
+                   schemas/map->Campaign
+                   parse-campaign)]
     (if create?
       (db/add-campaign campaign)
       (db/update-campaign campaign))))
@@ -56,33 +55,38 @@
   (let [slug (p/safe-get-in req [:params :slug])]
     (if-not (db/slug-exists? slug)
       (route/not-found "Page not found")
-      (let [campaign (db/get-campaign-by-slug slug)
-            token (:oauth-token campaign)
-            resp (http/post
-                  "https://money.yandex.ru/api/operation-history"
-                  {:accept      :json
-                   :form-params {:records 100
-                                 :type "deposition payment"
-                                 :from (->> campaign
-                                         :created-at
-                                         (tc/from-date)
-                                         (tf/unparse
-                                           (tf/formatters :date-time)))}
-                   :oauth-token token
-                   :as          :json})
-            operations (->> resp
-                            :body
-                            :operations
-                            (filter #(= (:status %) "success"))
-                            (map
-                              (fn [x]
-                                (if (= (:direction x) "out")
-                                  (update-in x [:amount] #(* % -1))
-                                  x)))
-                            (map (partial mask-wallet (:log-salt campaign))))]
-        (if (> (count operations) 0)
-          (tpl/page-campaign req operations campaign (oauth/req->token req))
-          (tpl/page-campaign-empty req campaign (oauth/req->token req)))))))
+      (try
+        (let [campaign (db/get-campaign-by-slug slug)
+              token (:oauth-token campaign)
+              oauth-key (oauth/req->token req)
+              resp (http/post
+                     "https://money.yandex.ru/api/operation-history"
+                     {:accept      :json
+                      :form-params {:records 100
+                                    :type    "deposition payment"
+                                    :from    (->> campaign
+                                               :created-at
+                                               (tc/from-date)
+                                               (tf/unparse
+                                                 (tf/formatters :date-time)))}
+                      :oauth-token token
+                      :as          :json})
+              operations (->> resp
+                           :body
+                           :operations
+                           (filter #(= (:status %) "success"))
+                           (map
+                             (fn [x]
+                               (if (= (:direction x) "out")
+                                 (update-in x [:amount] #(* % -1))
+                                 x)))
+                           (map (partial mask-wallet (:log-salt campaign))))]
+          (if (> (count operations) 0)
+            (tpl/page-campaign req operations campaign oauth-key)
+            (tpl/page-campaign-empty req campaign oauth-key)))
+        (catch Exception _ (tpl/page-campaign-problem
+                             (db/get-campaign-by-slug slug)
+                             (oauth/req->token req)))))))
 
 (defn get-widget-page
   [req]
@@ -107,12 +111,14 @@
 
 (c/defroutes management
   (c/GET "/" req
-   (let [wallet-id (oauth/req->wallet-id req)]
-     (if (db/wallet-id-exists? wallet-id)
-       (do
-         (handle-campaign-change false req)
-         (tpl/page-management req (db/get-campaign-by-wallet-id wallet-id)))
-       (tpl/page-management-create req))))
+    (try
+      (let [wallet-id (oauth/req->wallet-id req)]
+        (if (db/wallet-id-exists? wallet-id)
+          (do
+            (handle-campaign-change false req)
+            (tpl/page-management req (db/get-campaign-by-wallet-id wallet-id)))
+          (tpl/page-management-create req)))
+      (catch Exception _ (friend/logout* (resp/redirect "/")))))
   (c/POST "/" req
     (let [create? (not (db/wallet-id-exists? (oauth/req->wallet-id req)))]
       (handle-campaign-change create? req)

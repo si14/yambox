@@ -329,3 +329,35 @@
                (wrap-footer)
                (include-js "https://www.google.com/jsapi")
                (include-js "/histogram.js")]})))
+
+(defn page-campaign-problem
+  [campaign oauth-token]
+  (let [{:keys [target-money start-money current-money name slug]} campaign
+        target-adjusted (- target-money start-money)
+        current-adjusted (- current-money start-money)
+        width-percent (* 100 (/ (double current-adjusted)
+                               (double target-adjusted)))
+        campaign-link (str "https://yambox.org/campaigns/" (:slug campaign))
+        widget-link (str campaign-link "/widget")]
+    (make-html
+      {:title (str "Проблемы с данной кампанией — YamBox")
+       :body  [:div
+               (wrap-top oauth-token)
+               [:div.separator]
+               [:div.container.page
+                [:div.col-sm-12.campaign-info
+                 [:h1 name]
+                 [:div.ruller
+                  [:span.max target-money]
+                  [:div.active {:style (str "width: " width-percent "%;")}
+                   [:span.cur current-adjusted]]]]]
+               [:div.nothing
+                [:h2 "К сожалению, с отображением данных кампании возникли проблемы"]
+                [:div.container
+                 [:div.col-sm-3]
+                 [:div.col-sm-6
+                  [:p
+                   "Если это вы создали данную кампанию, пожалуйста, авторизуйтесь на YamBox снова
+                   для того, чтобы мы смогли загрузить вашу историю транзакций."]]
+                 [:div.col-sm-3]]]
+               (wrap-footer)]})))
