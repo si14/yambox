@@ -121,4 +121,4 @@
      [:div.banner {:style "width: 100%"}
       [:div.row {:style "text-align: center;"}
        [:div.cell
-        "Заданный виджет не существует."]]]]))
+        "Виджет не найден."]]]]))

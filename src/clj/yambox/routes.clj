@@ -4,6 +4,7 @@
     [clj-http.client :as http]
     [compojure.core :as c]
     [compojure.route :as route]
+    [digest :as d]
     [plumbing.core :as p]
     [schema.coerce :as coerce]
     [ring.util.response :as resp]
@@ -23,6 +24,14 @@
 ;;
 
 (def parse-campaign (coerce/coercer Campaign coerce/string-coercion-matcher))
+
+(defn mask-wallet
+  [salt x]
+  (update-in x [:title] (fn [t] (clojure.string/replace t #"[\d]{5,15}"
+                                  (fn [r] (-> r
+                                            (str salt)
+                                             d/sha-256
+                                            (subs 0 16)))))))
 
 ;;
 ;; Handler functions
@@ -51,22 +60,28 @@
                   "https://money.yandex.ru/api/operation-history"
                   {:accept      :json
                    :form-params {:records 100
-                                 :type "deposition"
-                                 :from (->>
-                                         campaign
-                                         :created-at
-                                         (tc/from-date)
-                                         (tf/unparse
-                                           (tf/formatters :date-time)))}
+                                 :type "deposition payment"
+                                 :from  (->>
+                                          campaign
+                                          :created-at
+                                          (tc/from-date)
+                                          (tf/unparse
+                                            (tf/formatters :date-time)))}
                    :oauth-token token
                    :as          :json})
             operations (->> resp
                             :body
                             :operations
-                            (filter #(= (:status %) "success")))]
+                            (filter #(= (:status %) "success"))
+                            (map
+                              (fn [x]
+                                (if (= (:direction x) "out")
+                                  (update-in x [:amount] #(* % -1))
+                                  x)))
+                            (map (partial mask-wallet (:log-salt campaign))))]
         (if (> (count operations) 0)
           (tpl/page-campaign req operations campaign)
-          (tpl/page-campaign-empty req operations campaign))))))
+          (tpl/page-campaign-empty req campaign))))))
 
 (defn get-widget-page
   [req]

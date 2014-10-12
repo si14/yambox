@@ -211,7 +211,7 @@
             (wrap-footer)]}))
 
 (defn page-campaign-empty
-  [req op campaign]
+  [req campaign]
   (let [{:keys [target-money start-money current-money name slug]} campaign
         target-adjusted (- target-money start-money)
         current-adjusted (- current-money start-money)
@@ -279,10 +279,11 @@
                                 (l/to-local-date-time (:datetime item)))]]
                     [:div.amount (:amount item) " ₽"]
                     [:div.clear]])]
-                (let [total (reduce #(+ %1 (:amount %2)) 0 op)
-                      average (/ total (count op))
-                      max-op (apply max-key :amount op)
-                      min-op (apply min-key :amount op)
+                (let [positive (filter #(> (:amount %) 0) op)
+                      total (reduce #(+ %1 (:amount %2)) 0 positive)
+                      average (/ total (count positive))
+                      max-op (apply max-key :amount positive)
+                      min-op (apply min-key :amount positive)
                       stats [{:name "Средняя сумма перевода" :val (Math/floor average)}
                              {:name "Максимальный перевод" :val (:amount max-op)}
                              {:name "Минимальный перевод" :val (:amount min-op)}]]
@@ -296,13 +297,13 @@
 
                    [:div.graphs
                     [:h3 "Распределение платежей"]
-                    [:div#histogram ""]]
+                    [:div#histogram ""]
+                    [:script "var columns = [['Платеж', 'Сумма'],"
+                     (apply str
+                       (for [item positive]
+                         (str "['" (:title item) "', " (:amount item) "],")))
+                     "];"]]
                    (wrap-yandex-social)])]
                (wrap-footer)
-               [:script "var columns = [['Платеж', 'Сумма'],"
-                (apply str
-                  (for [item op]
-                    (str "['" (:title item) "', " (:amount item) "],")))
-                "];"]
                (include-js "https://www.google.com/jsapi")
                (include-js "/histogram.js")]})))

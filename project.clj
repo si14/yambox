@@ -25,6 +25,7 @@
                  [honeysql "0.4.3"]
                  [clj-time "0.8.0"]
                  [slingshot "0.11.0"]
+                 [digest "1.4.4"]
 
                  ;; friend-oauth2 deps
                  [clj-http "0.7.7"]
