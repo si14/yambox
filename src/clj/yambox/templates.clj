@@ -139,8 +139,8 @@
 
 (defn page-management
   [req campaign]
-  (let [campaign-link (str "https://yambox.org/campaigns/" (:slug campaign) "/")
-        widget-link (str campaign-link "widget/")]
+  (let [campaign-link (str "https://yambox.org/campaigns/" (:slug campaign))
+        widget-link (str campaign-link "widget")]
     (make-html
      {:title "Управление кампанией — YamBox"
       :body [:div

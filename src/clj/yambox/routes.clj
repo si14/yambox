@@ -39,21 +39,23 @@
 
 (defn get-campaign-page
   [req]
-  (let [slug (p/safe-get-in req [:params :slug])
-        campaign (db/get-campaign-by-slug slug)
-        token (:oauth-token campaign)
-        resp (http/post
-               "https://money.yandex.ru/api/operation-history"
-               {:accept      :json
-                :form-params {:records 100 :type "deposition"}
-                :oauth-token token
-                :as          :json})
-        op (->>
-             resp
-             :body
-             :operations
-             (filter #(= (:status %) "success")))]
-    (tpl/page-campaign req op)))
+  (let [slug (p/safe-get-in req [:params :slug])]
+    (if-not (db/slug-exists? slug)
+      (route/not-found "Page not found")
+      (let [campaign (db/get-campaign-by-slug slug)
+            token (:oauth-token campaign)
+            resp (http/post
+                  "https://money.yandex.ru/api/operation-history"
+                  {:accept      :json
+                   :form-params {:records 100 :type "deposition"}
+                   :oauth-token token
+                   :as          :json})
+            op (->>
+                resp
+                :body
+                :operations
+                (filter #(= (:status %) "success")))]
+        (tpl/page-campaign req op)))))
 
 (defn get-widget-page
   [req]
