@@ -151,6 +151,7 @@
                  [:form {:role "form" :method "POST"}
                   [:div.form-group
                    [:input.header.control {:value (:name campaign)
+                                           :required "required"
                                            :name  "name"}]]
                   [:div.form-group
                    [:label "Ссылка на страницу кампании:"]
@@ -189,16 +190,19 @@
               [:form {:role "form" :method "POST"}
                [:div.form-group
                 [:input.header.control {:placeholder "Название кампании"
+                                        :required "required"
                                         :name "name"}]
                 [:div.descr "Например, "
                  "«Сбор денег для проведения избирательной кампании»"]]
                [:div.form-group
                 [:label "Ссылка на страницу кампании (буквы a-z, тире и цифры; например, kittens-unlimited):"]
-                [:input.control {:name "slug"}]]
+                [:input.control {:name "slug"
+                                 :required "required"}]]
                [:div.form-group
                 [:label "Собираемая сумма (в рублях):"]
                 [:input.control {:type "number"
-                                 :name "target-money"}]]
+                                 :name "target-money"
+                                 :required "required"}]]
                [:input.btn.btn-default {:type "submit" :value "Создать"}]]]
              [:div.col-sm-4.tips
               [:p "Кампания привязана к номеру кошелька Яндекс.Денег, поэтому "
