@@ -244,5 +244,16 @@
                     [:div.stat
                      [:div.descr (:name stat) ":"]
                      [:div.amount (:val stat) " ₽"]
-                     [:div.clear]])]])]
-             (wrap-footer)]}))
+                     [:div.clear]])]
+
+                 [:div.graphs
+                  [:h3 "Распределение платежей"]
+                  [:div#histogram ""]]])]
+             (wrap-footer)
+             [:script "var columns = [['Платеж', 'Сумма'],"
+              (apply str
+                (for [item op]
+                  (str "['" (:title item) "', " (:amount item) "],")))
+              "];"]
+             (include-js "https://www.google.com/jsapi")
+             (include-js "/histogram.js")]}))
