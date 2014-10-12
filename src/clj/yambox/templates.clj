@@ -1,7 +1,9 @@
 (ns yambox.templates
   (:use hiccup.core
         hiccup.page)
-  (:require [plumbing.core :as p]))
+  (:require [plumbing.core :as p]
+            [clj-time.local :as l]
+            [clj-time.format :as f]))
 
 (defn- wrap-head
   [title]
@@ -192,7 +194,43 @@
             (wrap-footer)]}))
 
 (defn page-campaign
-  [req]
+  [req op]
   (make-html
     {:title ""
-     :body ""}))
+     :body  [:div
+             (include-js "http://code.highcharts.com/2.2/highcharts.js")
+             (wrap-top [:a {:href "/logout"} "Выйти"])
+             [:div.separator]
+             [:div.container.page
+              [:div.col-sm-12.campaign-info
+               [:h1 "Название кампании"]
+               [:div.ruller
+                [:span.max "100 000"]
+                [:div.active {:style "width: 39%;"}
+                 [:span.cur "38 800"]]]]]
+             [:div.container.page
+              [:div.col-sm-6.operations
+               (for [item op]
+                 [:div.operation
+                  [:div.descr
+                   (:title item)
+                   [:p.date (f/unparse
+                              (f/formatter "dd.MM.yyyy HH:mm")
+                              (l/to-local-date-time (:datetime item)))]]
+                  [:div.amount (:amount item) " ₽"]
+                  [:div.clear]])]
+              (let [total (reduce #(+ %1 (:amount %2)) 0 op)
+                    average (/ total (count op))
+                    max-op (apply max-key :amount op)
+                    min-op (apply min-key :amount op)
+                    stats [{:name "Средняя сумма перевода" :val (Math/floor average)}
+                           {:name "Максимальный перевод" :val (:amount max-op)}
+                           {:name "Минимальный перевод" :val (:amount min-op)}]]
+                [:div.col-sm-6.right-block
+                 [:div.stats
+                  (for [stat stats]
+                    [:div.stat
+                     [:div.descr (:name stat) ":"]
+                     [:div.amount (:val stat) " ₽"]
+                     [:div.clear]])]])]
+             (wrap-footer)]}))

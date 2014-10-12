@@ -1,19 +1,35 @@
 (ns yambox.routes
   (:require
-   [cemerick.friend :as friend]
-   [clj-http.client :as http]
-   [compojure.core :as c]
-   [compojure.route :as route]
-   [plumbing.core :as p]
-   [schema.coerce :as coerce]
-   [ring.util.response :as resp]
-   [yambox.oauth :as oauth]
-   [yambox.templates :as tpl]
-   [yambox.widget :as widget]
-   [yambox.database :as db]
-   [yambox.schemas :as schemas])
+    [cemerick.friend :as friend]
+    [clj-http.client :as http]
+    [compojure.core :as c]
+    [compojure.route :as route]
+    [plumbing.core :as p]
+    [schema.coerce :as coerce]
+    [ring.util.response :as resp]
+    [yambox.oauth :as oauth]
+    [yambox.templates :as tpl]
+    [yambox.widget :as widget]
+    [yambox.database :as db]
+    [yambox.schemas :as schemas])
   (:import
-   [yambox.schemas Campaign]))
+    [yambox.schemas Campaign]))
+
+(defn get-campaign-page
+  [req]
+  (let [token (auth/req->token req)
+        resp (http/post
+               "https://money.yandex.ru/api/operation-history"
+               {:accept      :json
+                :form-params {:records 100 :type "deposition"}
+                :oauth-token token
+                :as          :json})
+        op (->>
+             resp
+             :body
+             :operations
+             (filter #(= (:status %) "success")))]
+    (tpl/page-campaign req op)))
 
 ;;
 ;; Utils
@@ -46,7 +62,7 @@
     (if (oauth/req->token req)
       (resp/redirect "/management")
       (tpl/page-index)))
-  (c/GET "/campaign/:slug" req (tpl/page-campaign req))
+  (c/GET "/campaign/:slug" req (get-campaign-page req))
   (c/GET "/campaign/:slug/widget" req (widget/render req))
   (friend/logout (c/GET "/logout" request (resp/redirect "/"))))
 

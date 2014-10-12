@@ -174,6 +174,116 @@ div.choose {
     text-align: center;
 }
 
+
+/* Campaign info */
+
+div.campaign-info  {
+    padding: 20px 10px;
+}
+
+div.campaign-info h1 {
+    margin-left: 0px;
+}
+
+
+/* Operations */
+
+div.operations  {
+    background: #f0fbfc;
+    padding: 0px;
+}
+
+div.operation {
+    padding: 5px 10px;
+}
+
+
+div.operation:nth-child(even) {
+    background: #f0fbfc;
+}
+
+div.operation:nth-child(odd) {
+    background: #f0f4fc;
+}
+
+div.operation div.descr {
+    float: left;
+}
+
+div.operation div.descr p.date {
+    margin: 0px;
+    font-size: 12px;
+}
+
+div.operation div.amount {
+    float: right;
+    font-size: 28px;
+}
+
+div.operation div.clear {
+    clear: both;
+}
+
+div.ruller {
+    margin: 5px 0;
+    height: 18px;
+    border-radius: 3px;
+    position: relative;
+    background: #b5acac;
+    width: 100%;
+    font-weight: bold;
+    color: white;
+}
+
+div.ruller span.max, div.ruller span.cur {
+  position: absolute;
+  right: 0;
+  padding: 2px 4px;
+  top: 0;
+  font-size: 12px;
+}
+
+div.ruller div.active {
+  left: 0;
+  height: 18px;
+  border-radius: 3px;
+  position: absolute;
+  background: #ff8052;
+  top: 0;
+}
+
+
+/* Right block */
+
+div.right-block {
+    padding: 0px 10px;
+}
+
+div.stats div.stat {
+    padding: 5px 0px;
+}
+
+@media (min-width: 768px) {
+    div.stats div.stat {
+        padding-left: 10px;
+    }
+}
+
+div.stats div.stat .descr {
+    float: left;
+    padding-top: 12px;
+}
+
+div.stats div.stat .amount {
+    float: right;
+    font-size: 28px;
+}
+
+div.stats div.clear {
+    clear: both;
+}
+
+
 /* Page */
 
 div.page div.form  {
