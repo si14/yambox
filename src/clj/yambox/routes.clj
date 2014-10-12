@@ -70,14 +70,12 @@
 ;;
 
 (c/defroutes main
-  (try+
-    (c/GET "/" req
-      (if (oauth/req->token req)
-        (resp/redirect "/management")
-        (tpl/page-index)))
-    (c/GET "/campaigns/:slug" req (get-campaign-page req))
-    (c/GET "/campaigns/:slug/widget" req (get-widget-page req))
-    (catch [:status 401] {:keys [body]} (friend/logout (resp/redirect "/"))))
+  (c/GET "/" req
+    (if (oauth/req->token req)
+      (resp/redirect "/management")
+      (tpl/page-index)))
+  (c/GET "/campaigns/:slug" req (get-campaign-page req))
+  (c/GET "/campaigns/:slug/widget" req (get-widget-page req))
   (friend/logout (c/GET "/logout" request (resp/redirect "/"))))
 
 (c/defroutes management
