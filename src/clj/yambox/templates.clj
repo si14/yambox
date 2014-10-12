@@ -113,7 +113,8 @@
                 [:p [:b
                      "И последнее: никто не любит, когда его подслушивают. Именно поэтому ваше соединение
                      с YamBox "
-                     [:a {:href "https://www.ssllabs.com/ssltest/analyze.html?d=yambox.org"}
+                     [:a {:target "_blank"
+                          :href "https://www.ssllabs.com/ssltest/analyze.html?d=yambox.org"}
                       "имеет рейтинг безопасности A+"]
                      "."]]]
                [:div.col-sm-2]]]

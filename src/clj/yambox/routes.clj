@@ -39,7 +39,9 @@
 
 (defn get-campaign-page
   [req]
-  (let [token (oauth/req->token req)
+  (let [slug (p/safe-get-in req [:params :slug])
+        campaign (db/get-campaign-by-slug slug)
+        token (:oauth-token campaign)
         resp (http/post
                "https://money.yandex.ru/api/operation-history"
                {:accept      :json

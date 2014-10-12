@@ -27,18 +27,27 @@
      [:div.row {:display "table-row"}
       [:div.cell {:display "table-cell"
                   :vertical-align "middle"}
-       [:div.vote {:margin "10px 20px"
+       [:input.sum {:height "38px"
+                    :width "100px"
+                    :margin-left "20px"
+                    :border "1px solid #ddd"
+                    :border-radius "3px"
+                    :padding "0px 5px"
+                    :font-size "26px"
+                    :display "inline-block"}]
+       [:div.vote {:margin "10px 20px 10px 10px"
                    :margin-right "0"}
-        [:input.sum {:height "35px"
-                     :width "20px"
-                     :display "inline-block"}]
-        [:button.vote-btn {:background "#ff8052;"
+        [:button.vote-btn {:background "#ff8052"
                            :display "inline-block"
                            :padding "10px 20px"
                            :border-radius "3px"
+                           :outline "none"
+                           :border "0px"
+                           :font-size "14px"
                            :color "white"
                            :font-weight "bold"}]]]
       [:div.content {:width "100%"}
+       [:a {:color "#ff8052"}]
        [:h1 {:font-size "14px" }]
        [:div.ruller {:width "100%"
                      :height "18px"
@@ -60,10 +69,11 @@
                       :left "0"
                       :top "0"
                       :border-radius "3px"}]]]]
-     [:div.info {:position "absolute"
+     [:div.info {:display "none"
+                 :position "absolute"
                  :padding "5px 20px"
                  :color "#aaa"
-                 :font-size "11px"
+                 :font-size "10px"
                  :right "0"
                  :bottom "0"}
       [:a {:color "#aaa"}]]]))
@@ -79,24 +89,25 @@
       [:meta {:charset "UTF-8"}]
       [:style (get-css)]]
      [:body
-      [:div.banner
-       [:div.row
-        [:div.cell.content
-         [:h1 slug]
-         [:div.ruller
-          [:span.max target-adjusted]
-          [:div.active {:style (str "width: " width-percent "%;")}
-           [:span.cur current-adjusted]]]]
-        [:div.cell
-         [:div.vote
-          [:form {:method "POST"
-                  :action "https://money.yandex.ru/quickpay/confirm.xml"}
-           [:input.sum {:type "text" :name "sum" :value 100}]
+      [:form {:method "POST"
+              :action "https://money.yandex.ru/quickpay/confirm.xml"}
+       [:div.banner
+        [:div.row
+         [:div.cell.content
+          [:h1 [:a {:href (str "https://yambox.org/campaigns/" slug) :target "_blank"} name]]
+          [:div.ruller
+           [:span.max target-adjusted]
+           [:div.active {:style (str "width: " width-percent "%;")}
+            [:span.cur current-adjusted]]]]
+         [:div.cell
+          [:input.sum {:type "text" :name "sum" :value 100}]]
+         [:div.cell
+          [:div.vote
            [:input {:type "hidden" :name "receiver" :value wallet-id}]
            [:input {:type "hidden" :name "formcomment" :value comment}]
            [:input {:type "hidden" :name "targets" :value comment}]
            [:input {:type "hidden" :name "short-dest" :value comment}]
            [:input {:type "hidden" :name "quickpay-form" :value "small"}]
            [:input {:type "hidden" :name "paymentType" :value "PC"}]
-           [:button.vote-btn {:type "submit"} "Оплатить"]]]]]
-       [:div.info "Powered by " [:a {:href "https://yambox.org" :target "_blank"} "YamBox"]]]])))
+           [:button.vote-btn {:type "submit"} "Оплатить"]]]]
+        [:div.info "Powered by " [:a {:href "https://yambox.org" :target "_blank"} "YamBox"]]]]])))
