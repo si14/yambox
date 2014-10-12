@@ -297,7 +297,7 @@
                       average (/ total (count positive))
                       max-op (apply max-key :amount positive)
                       min-op (apply min-key :amount positive)
-                      stats [{:name "Средняя сумма перевода" :val (Math/floor average)}
+                      stats [{:name "Средняя сумма перевода" :val (format "%.2f" average)}
                              {:name "Максимальный перевод" :val (:amount max-op)}
                              {:name "Минимальный перевод" :val (:amount min-op)}]]
                   [:div.col-sm-6.right-block

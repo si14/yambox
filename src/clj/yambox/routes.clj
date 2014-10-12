@@ -66,7 +66,7 @@
                       :form-params {:records 100
                                     :type    "deposition payment"
                                     :from    (->> campaign
-                                               :created-at
+                                               :created
                                                (tc/from-date)
                                                (tf/unparse
                                                  (tf/formatters :date-time)))}
