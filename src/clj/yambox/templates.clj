@@ -12,8 +12,8 @@
    [:title title]
    [:link {:rel "icon" :type "image/png" :href "/img/icon.png"}]
    (include-css "https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css")
-   (include-css "http://fonts.googleapis.com/css?family=PT+Sans+Narrow&subset=latin,cyrillic")
-   (include-css "http://fonts.googleapis.com/css?family=PT+Sans:400,700&subset=cyrillic,latin")
+   (include-css "https://fonts.googleapis.com/css?family=PT+Sans+Narrow&subset=latin,cyrillic")
+   (include-css "https://fonts.googleapis.com/css?family=PT+Sans:400,700&subset=cyrillic,latin")
    (include-css "/css/style.css")])
 
 (defn- wrap-top
