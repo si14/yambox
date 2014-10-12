@@ -35,7 +35,12 @@
    " team for "
    [:a {:href   "https://tech.yandex.ru/events/meetings/october-2014/"
         :target "_blank"}
-    "Yandex.Money Hackathon"]])
+    "Yandex.Money Hackathon"]
+   (include-js "/metrika.js")
+   [:noscript
+    [:div
+     [:img {:src   "http://mc.yandex.ru/watch/22414405"
+            :style "position:absolute; left:-9999px;"}]]]])
 
 (defn- wrap-yandex-social
   []
