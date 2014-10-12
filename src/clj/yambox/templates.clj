@@ -17,10 +17,13 @@
    (include-css "/css/style.css")])
 
 (defn- wrap-top
-  [& links]
+  [is-authorized?]
   [:div.top.container
-   [:img {:src "/img/logo_small.png"}]
-   [:div.links links]
+   [:a {:href "/"} [:img {:src "/img/logo_small.png" :border "0"}]]
+   [:div.links
+    (if is-authorized?
+      [:a {:href "/logout"} "Выйти"]
+      [:a {:href "/login"} "Войти в аккаунт"])]
    [:div.clear]])
 
 (defn- wrap-footer
@@ -57,7 +60,7 @@
   (make-html
     {:title "YamBox"
      :body  [:div
-             (wrap-top [:a {:href "/login"} "Войти в аккаунт"])
+             (wrap-top false)
              [:div.landing
               [:div.info
                [:h1 "Если не мой кошелёк, то чей?"]
@@ -144,7 +147,7 @@
     (make-html
       {:title "Управление кампанией — YamBox"
        :body  [:div
-               (wrap-top [:a {:href "/logout"} "Выйти"])
+               (wrap-top true)
                [:div.separator]
                [:div.container.page
                 [:div.col-sm-8.form
@@ -183,7 +186,7 @@
   (make-html
     {:title "Создание кампании — YamBox"
      :body [:div
-            (wrap-top [:a {:href "/logout"} "Выйти"])
+            (wrap-top true)
             [:div.separator]
             [:div.container.page
              [:div.col-sm-8.form
@@ -191,9 +194,7 @@
                [:div.form-group
                 [:input.header.control {:placeholder "Название кампании"
                                         :required "required"
-                                        :name "name"}]
-                [:div.descr "Например, "
-                 "«Сбор денег для проведения избирательной кампании»"]]
+                                        :name "name"}]]
                [:div.form-group
                 [:label "Ссылка на страницу кампании (буквы a-z, тире и цифры; например, kittens-unlimited):"]
                 [:input.control {:name "slug"
@@ -226,7 +227,7 @@
     (make-html
       {:title (str name " — YamBox")
        :body  [:div
-               (wrap-top [:a {:href "/logout"} "Выйти"])
+               (wrap-top)
                [:div.separator]
                [:div.container.page
                 [:div.col-sm-12.campaign-info
@@ -254,16 +255,18 @@
                (wrap-footer)]})))
 
 (defn page-campaign
-  [req op campaign]
+  [req op campaign oauth-token]
   (let [{:keys [target-money start-money current-money name slug]} campaign
         target-adjusted (- target-money start-money)
         current-adjusted (- current-money start-money)
         width-percent (* 100 (/ (double current-adjusted)
-                               (double target-adjusted)))]
+                               (double target-adjusted)))
+        campaign-link (str "https://yambox.org/campaigns/" (:slug campaign))
+        widget-link (str campaign-link "/widget")]
     (make-html
       {:title (str name " — YamBox")
        :body  [:div
-               (wrap-top [:a {:href "/logout"} "Выйти"])
+               (wrap-top oauth-token)
                [:div.separator]
                [:div.container.page
                 [:div.col-sm-12.campaign-info
@@ -307,6 +310,15 @@
                        (for [item positive]
                          (str "['" (:title item) "', " (:amount item) "],")))
                      "];"]]
+
+                   [:div.iframe
+                    [:h3 "Код виджета"]
+                    [:pre (str "&lt;iframe src=\"" widget-link "\""
+                            " width=\"100%\""
+                            " frameborder=\"0\""
+                            " allowtransparency=\"true\""
+                            " scrolling=\"no\""
+                            "&gt;&lt;/iframe&gt;")]]
                    (wrap-yandex-social)])]
                (wrap-footer)
                (include-js "https://www.google.com/jsapi")

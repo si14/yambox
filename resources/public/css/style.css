@@ -293,9 +293,10 @@ div.graphs {
     background: #f0fbfc;
 }
 
-div.graphs h3 {
+div.graphs h3, div.iframe h3 {
     padding-top: 20px;
 }
+
 
 #histogram {
     padding: 10px;

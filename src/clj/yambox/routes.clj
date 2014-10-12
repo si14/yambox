@@ -33,7 +33,7 @@
                                                      (str salt)
                                                      d/sha-256
                                                      (subs 0 16))]
-                                      (str "<span class=\"mask\">" masked "</span>")))))))
+                                      masked))))))
 
 ;;
 ;; Handler functions
@@ -62,12 +62,7 @@
                   "https://money.yandex.ru/api/operation-history"
                   {:accept      :json
                    :form-params {:records 100
-                                 :type "deposition payment"
-                                 :from (->> campaign
-                                            :created-at
-                                            (tc/from-date)
-                                            (tf/unparse
-                                             (tf/formatters :date-time)))}
+                                 :type "deposition payment"}
                    :oauth-token token
                    :as          :json})
             operations (->> resp
@@ -81,7 +76,7 @@
                                   x)))
                             (map (partial mask-wallet (:log-salt campaign))))]
         (if (> (count operations) 0)
-          (tpl/page-campaign req operations campaign)
+          (tpl/page-campaign req operations campaign (oauth/req->token req))
           (tpl/page-campaign-empty req campaign))))))
 
 (defn get-widget-page
