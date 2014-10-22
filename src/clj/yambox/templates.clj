@@ -31,15 +31,24 @@
   [& links]
   [:div.footer
    "&copy 2014 "
-   [:b "Sugar Glider"]
-   " team for "
-   [:a {:href   "https://tech.yandex.ru/events/meetings/october-2014/"
-        :target "_blank"}
-    "Yandex.Money Hackathon"]
-   (include-js "/metrika.js")
+   [:a {:href "https://twitter.com/si14"} "Dmitry Groshev"]
+   " and "
+   [:a {:href "https://twitter.com/alwxtwi"} "Alexander Pantyukhov"]
+   [:script {:type "text/javascript"}
+    "(function (d, w, c) { (w[c] = w[c] || []).push(function() { try
+    { w.yaCounter26594253 = new Ya.Metrika({id:26594253, clickmap:true,
+    trackLinks:true, accurateTrackBounce:true}); } catch(e) { } });
+    var n = d.getElementsByTagName(\"script\")[0], s = d.createElement(\"script\"),
+    f = function () { n.parentNode.insertBefore(s, n); };
+    s.type = \"text/javascript\"; s.async = true;
+    s.src = (d.location.protocol == \"https:\" ? \"https:\" : \"http:\")
+    + \"//mc.yandex.ru/metrika/watch.js\";
+    if (w.opera == \"[object Opera]\") {
+    d.addEventListener(\"DOMContentLoaded\", f, false);
+    } else { f(); } })(document, window, \"yandex_metrika_callbacks\");"]
    [:noscript
     [:div
-     [:img {:src   "http://mc.yandex.ru/watch/22414405"
+     [:img {:src   "http://mc.yandex.ru/watch/26594253"
             :style "position:absolute; left:-9999px;"}]]]])
 
 (defn- wrap-yandex-social
